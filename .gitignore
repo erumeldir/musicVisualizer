@@ -6,8 +6,18 @@
 # Compiled Dynamic libraries
 *.so
 *.dylib
+*.dll
 
 # Compiled Static libraries
 *.lai
 *.la
 *.a
+*.lib
+
+#Debug directory
+Debug/*
+Debug\*
+
+#VS user settings
+*.suo
+*.user
