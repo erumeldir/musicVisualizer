@@ -1,11 +1,12 @@
 #include <stdlib.h>
 #include <iostream>
-#include <GL/glut.h>
 #include "visualizer.h"
 
 //initizlize visualizer instance
 bool Visualizer::instanceFlag = false;
 Visualizer* Visualizer::instance = NULL;
+Shader* testShader;
+
 
 /*******************************SCENE UPDATE**********************************/
 void Visualizer::updateScene()
@@ -67,6 +68,19 @@ void Visualizer::init(int* argcp, char** argv)
 	//TESTING, replace with scene stuff
 	testSphere = new Sphere(6,20,20);
 	world->addChild(testSphere);
+
+  // TESTING: ShaderGroup object turns things blue to test shadergroup
+  testShader = new Shader("shaders/simple.vert", "shaders/simple.frag", true);
+  ShaderGroup* testShad = new ShaderGroup(testShader);
+  // Matrix transform to move shaded sphere to the up right
+  MatrixTransform* right = new MatrixTransform();
+  right->localTranslate(10, 10, 0);
+  // second sphere to be shaded
+  Sphere* testSphere2 = new Sphere(3, 10, 10);
+  // add blue shaded, translated sphere to world
+  right->addChild(testSphere2);
+  testShad->addChild(right);
+  world->addChild(testShad);
 
 	//light the scene
 	lights[0] = new DirectionalLight(GL_LIGHT0);
@@ -180,7 +194,7 @@ void Visualizer::onKeyboard(unsigned char key, int x, int y)
 /********************************* MAIN **************************************/
 int main(int argc, char* argv[])
 {
-	Visualizer* musicVis;
-	musicVis = Visualizer::getInstance(&argc,argv);
-	musicVis->run();
+  Visualizer* musicVis;
+  musicVis = Visualizer::getInstance(&argc,argv);
+  musicVis->run();
 }

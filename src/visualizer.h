@@ -1,11 +1,11 @@
 #ifndef _VISUALIZER_H_
 #define _VISUALIZER_H_
 
-#include "Camera.h"
-#include "Frustum.h"
-#include "Light.h"
 #include "Geometry.h"
+#include "Light.h"
+#include "Camera.h"
 #include "Matrix4.h"
+#include "ShaderGroup.h"
 
 /*
  * Main class to contain all methods for the visualizer
@@ -39,7 +39,7 @@ private:
 	Light* lights[NUM_LIGHTS];
 
 	//geometry
-	Sphere* testSphere;
+  Sphere* testSphere;
 
 	//scene graph groups
 	MatrixTransform* world;
