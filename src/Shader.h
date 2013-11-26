@@ -36,6 +36,10 @@ public:
 	void bind();
 	void unbind();
 
+  // previous and current binder
+  GLhandleARB previousShader;
+  static GLhandleARB currentShader;
+
 	/** get the program */
 	//unsigned int getPid()
 	GLhandleARB getPid()

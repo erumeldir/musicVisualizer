@@ -6,6 +6,8 @@
 bool Visualizer::instanceFlag = false;
 Visualizer* Visualizer::instance = NULL;
 Shader* testShader;
+Shader* testShader2;
+Shader* testShader3;
 
 
 /*******************************SCENE UPDATE**********************************/
@@ -70,17 +72,41 @@ void Visualizer::init(int* argcp, char** argv)
 	world->addChild(testSphere);
 
   // TESTING: ShaderGroup object turns things blue to test shadergroup
-  testShader = new Shader("shaders/simple.vert", "shaders/simple.frag", true);
+  testShader = new Shader("shaders/simpleBlue.vert", "shaders/simpleBlue.frag", true);
+  testShader2 = new Shader("shaders/simpleRed.vert", "shaders/simpleRed.frag", true);
+  testShader3 = new Shader("shaders/simpleGreen.vert", "shaders/simpleGreen.frag", true);
   ShaderGroup* testShad = new ShaderGroup(testShader);
-  // Matrix transform to move shaded sphere to the up right
+  ShaderGroup* testShad2 = new ShaderGroup(testShader2);
+  ShaderGroup* testShad3 = new ShaderGroup(testShader3);
+
+  // Highest layer: Transform up right and apply blue shader
   MatrixTransform* right = new MatrixTransform();
   right->localTranslate(10, 10, 0);
-  // second sphere to be shaded
   Sphere* testSphere2 = new Sphere(3, 10, 10);
-  // add blue shaded, translated sphere to world
-  right->addChild(testSphere2);
-  testShad->addChild(right);
+
+  // Second layer: Transform below the highest layer and apply red shader
+  MatrixTransform* down = new MatrixTransform();
+  down->localTranslate(0, -9, 0);
+  Sphere* testSphere3 = new Sphere(3, 10, 10);
+
+  // Third layer: Transform below second layer and apply green shader
+  MatrixTransform* down2 = new MatrixTransform();
+  down2->localTranslate(0, -9, 0);
+  Sphere* testSphere4 = new Sphere(3, 10, 10);
+
+  // Connect scene graph according to described layers
+  // highest layer
   world->addChild(testShad);
+  testShad->addChild(right);
+  right->addChild(testSphere2);
+  right->addChild(down);
+  // second layer
+  down->addChild(testShad2);
+  down->addChild(down2);
+  testShad2->addChild(testSphere3);
+  // third layer
+  down2->addChild(testShad3);
+  testShad3->addChild(testSphere4);
 
 	//light the scene
 	lights[0] = new DirectionalLight(GL_LIGHT0);
