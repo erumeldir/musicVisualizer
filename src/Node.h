@@ -1,10 +1,12 @@
 #ifndef _NODE_H_
 #define _NODE_H_
 
+//#include "Shader.h"
 #include <list>
 #include "Material.h"
 #include "ModelMatrix.h"
 #include "Vector4.h"
+#include "Vector3.h"
 #include "Frustum.h"
 
 using namespace std;
@@ -79,7 +81,7 @@ public:
 class MatrixTransform : public Group, public ModelMatrix
 {
 protected:
-
+	
 public:
 	//constructor
 	MatrixTransform();
