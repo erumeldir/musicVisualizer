@@ -1,7 +1,6 @@
 #define _USE_MATH_DEFINES
 
 #include <stdlib.h>
-#include <GL\glut.h>
 #include <math.h>
 #include "Light.h"
 

@@ -17,6 +17,9 @@ GNU General Public License for more details.
 
 #include "shader.h"
 
+// set default value for current shader
+GLhandleARB Shader::currentShader = 0;
+
 Shader::Shader(const char *vert, const char *frag, bool isFile)
 {
 	if(isFile)
@@ -30,6 +33,8 @@ Shader::Shader(const char *vert, const char *frag, bool isFile)
 	}
 	else
 		setup(vert, frag);
+
+  previousShader = 0;
 }
 
 Shader::~Shader()
@@ -40,12 +45,20 @@ Shader::~Shader()
 void
 Shader::bind()
 {
-	glUseProgramObjectARB(pid);
+  // save the previous shader if there is one
+  if (currentShader)
+  {
+    previousShader = currentShader;
+  }
+  currentShader = pid;
+  glUseProgramObjectARB(pid);
 }
 void
 Shader::unbind()
 {
-	glUseProgramObjectARB(0);
+  // go back to the previous shader
+	glUseProgramObjectARB(previousShader);
+  currentShader = previousShader;
 }
 
 void

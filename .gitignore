@@ -26,4 +26,4 @@ Debug\*
 *.opensdf
 *.sdf
 /ipch*
-
+\ipch*
