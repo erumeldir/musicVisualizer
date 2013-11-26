@@ -21,3 +21,9 @@ Debug\*
 #VS user settings
 *.suo
 *.user
+
+#misc VS files
+*.opensdf
+*.sdf
+/ipch*
+
