@@ -22,7 +22,8 @@ Debug\*
 *.suo
 *.user
 
-#other VS stuff
+#misc VS files
 *.opensdf
 *.sdf
 /ipch*
+\ipch*
