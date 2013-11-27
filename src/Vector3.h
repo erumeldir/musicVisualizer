@@ -1,6 +1,8 @@
 #ifndef _VECTOR3_H_
 #define _VECTOR3_H_
 
+#include "Vector4.h"
+
 class Vector3
 {
 protected:
@@ -15,6 +17,8 @@ public:
   void setCoordinate(double, int);  // sets the X coordniates of the vector to the given values
   void setVector(Vector3&); // sets coordinates to match given vector
   void operator =(Vector3& other) { setVector(other); }
+  void setVector(Vector4&); // sets coordinates to match given vector
+  void operator =(Vector4& other) { setVector(other); }
 
   double get(int); // gets a particular value of a coordinate
   double operator [](int i) { return get(i); } // operator overload for brackets

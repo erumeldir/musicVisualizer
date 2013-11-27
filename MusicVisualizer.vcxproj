@@ -39,7 +39,8 @@
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <LinkIncremental>true</LinkIncremental>
+    <LinkIncremental>false</LinkIncremental>
+    <IncludePath>C:\Users\David\Documents\GitHub\musicVisualizer\glut;C:\Users\David\Documents\GitHub\musicVisualizer\glut\include;C:\Users\David\Documents\GitHub\musicVisualizer\glut\include\GL;C:\Users\David\Documents\GitHub\musicVisualizer\glut\lib;C:\Users\David\Downloads\glut37 %281%29\glut-3.7;C:\Users\David\Downloads\glut37 %281%29\glut-3.7\include\GL;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -50,7 +51,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>.\glut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\David\Documents\GitHub\musicVisualizer\glut\lib;.\glut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -79,6 +80,7 @@
     <None Include="ReadMe.txt" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\BezierPatch4.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\Frustum.cpp" />
     <ClCompile Include="src\Geometry.cpp" />
@@ -95,6 +97,7 @@
     <ClCompile Include="src\visualizer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\BezierPatch4.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Frustum.h" />
     <ClInclude Include="src\Geometry.h" />

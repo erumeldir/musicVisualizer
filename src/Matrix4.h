@@ -34,7 +34,9 @@ class Matrix4
     void translate(Vector3);  // translate that takes in vector3
     void transpose();  // transposes the matrix (switches m and n)
     void print();  // prints the matrix
-	Matrix4& inverse(const double);	//computes a generic inverse
+	  Matrix4& inverse(const double);	//computes a generic inverse
+    void Matrix4::copyRot(Matrix4 other); // copies rotational part of the other matrix
+
 };
 
 #endif

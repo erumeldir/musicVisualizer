@@ -9,6 +9,10 @@ Shader* testShader;
 Shader* testShader2;
 Shader* testShader3;
 
+Vector3* controlPoints;
+BezierPatch4 * patch1;
+
+
 
 /*******************************SCENE UPDATE**********************************/
 void Visualizer::updateScene()
@@ -92,7 +96,19 @@ void Visualizer::init(int* argcp, char** argv)
   // Third layer: Transform below second layer and apply green shader
   MatrixTransform* down2 = new MatrixTransform();
   down2->localTranslate(0, -9, 0);
-  Sphere* testSphere4 = new Sphere(3, 10, 10);
+  // testing the bezier Patches
+  controlPoints = new Vector3[16];
+  controlPoints[0] = Vector3(-1.5, -1.5, 4.0); controlPoints[1] = Vector3(-0.5, -1.5, 2.0);
+  controlPoints[2] = Vector3(0.5, -1.5, -1.0);  controlPoints[3] = Vector3(1.5, -1.5, 2.0);
+  controlPoints[4] = Vector3(-1.5, -0.5, 1.0); controlPoints[5] = Vector3(-0.5, -0.5, 3.0);
+  controlPoints[6] = Vector3(0.5, -0.5, 0.0);  controlPoints[7] = Vector3(1.5, -0.5, -1.0);
+  controlPoints[8] = Vector3(-1.5, 0.5, 4.0); controlPoints[9] = Vector3(-0.5, 0.5, 0.0);
+  controlPoints[10] = Vector3(0.5, 0.5, 3.0);  controlPoints[11] = Vector3(1.5, 0.5, 4.0);
+  controlPoints[12] = Vector3(-1.5, 1.5, -2.0); controlPoints[13] = Vector3(-0.5, 1.5, -2.0);
+  controlPoints[14] = Vector3(0.5, 1.5, 0.0);  controlPoints[15] = Vector3(1.5, 1.5, -1.0);
+
+  patch1 = new BezierPatch4(controlPoints);
+
 
   // Connect scene graph according to described layers
   // highest layer
@@ -106,7 +122,7 @@ void Visualizer::init(int* argcp, char** argv)
   testShad2->addChild(testSphere3);
   // third layer
   down2->addChild(testShad3);
-  testShad3->addChild(testSphere4);
+  testShad3->addChild(patch1);
 
 	//light the scene
 	lights[0] = new DirectionalLight(GL_LIGHT0);
@@ -174,7 +190,6 @@ void Visualizer::displayCallback()
 	Matrix4 IDENTITY;
 	IDENTITY.identity();
 	scene->draw(cam.getViewMatrix(),frustum,culling);
-
 	glFlush();
 	glutSwapBuffers();
 }

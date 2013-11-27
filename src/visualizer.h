@@ -6,6 +6,7 @@
 #include "Camera.h"
 #include "Matrix4.h"
 #include "ShaderGroup.h"
+#include "BezierPatch4.h"
 
 /*
  * Main class to contain all methods for the visualizer
