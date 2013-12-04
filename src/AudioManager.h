@@ -40,6 +40,7 @@ public:
 	bool stop();
 
 	bool getFFT(float*,int);
+  void update();
 };
 
 #endif

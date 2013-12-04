@@ -1,6 +1,8 @@
 #ifndef _VISUALIZER_H_
 #define _VISUALIZER_H_
 
+#define FFT_SIZE 2048
+
 #include "Geometry.h"
 #include "Light.h"
 #include "Camera.h"
@@ -48,7 +50,8 @@ private:
 
 	//Audio
 	AudioManager* audioManager;
-	float*        fftBuf;
+	//float*        fftBuf;
+  float fftBuf[FFT_SIZE];
 
 public:
 	static Visualizer* getInstance(int*,char**);

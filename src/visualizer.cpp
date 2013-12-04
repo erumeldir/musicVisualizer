@@ -2,7 +2,6 @@
 #include <iostream>
 #include "visualizer.h"
 
-#define FFT_SIZE 16
 #define ENABLE_INIT_TESTING false
 
 //initizlize visualizer instance
@@ -20,18 +19,23 @@ BezierPatch4 * patch1;
 /*******************************SCENE UPDATE**********************************/
 void Visualizer::updateScene()
 {
+  audioManager->update();
+
 	//do update stuff here
 	bool fftSucceeded = false;
 	fftSucceeded = audioManager->getFFT(fftBuf,FFT_SIZE);
 	if(fftSucceeded)
 	{
+    float barLoc;
 		//DRAW STUFF WITH NEW FFT DATA
-		for(int i=0;i<FFT_SIZE;i++)
+		for(int i=0;i<FFT_SIZE-1;i++)
 		{
-			glLineWidth(2);
-			glBegin(GL_LINE);
-				glVertex3f(i-8,-5.0+(fftBuf[i]*10.0),0);
-				glVertex3f(i-8,-5.0,0);
+      barLoc = log(i*(22050.0/FFT_SIZE));
+			glLineWidth(1);
+      glColor3f(1, 1, 1);
+			glBegin(GL_LINES);
+				glVertex3f((barLoc-5)*2,-5.0+(fftBuf[i]*20.0),0);
+        glVertex3f((barLoc-5)*2, -5.0, 0);
 			glEnd();
 		}
 	}
@@ -131,7 +135,7 @@ void Visualizer::init(int* argcp, char** argv)
 		controlPoints[12] = Vector3(-1.5, 1.5, -2.0); controlPoints[13] = Vector3(-0.5, 1.5, -2.0);
 		controlPoints[14] = Vector3(0.5, 1.5, 0.0);  controlPoints[15] = Vector3(1.5, 1.5, -1.0);
 
-		patch1 = new BezierPatch4(controlPoints);
+	//	patch1 = new BezierPatch4(controlPoints);
 
 
 		// Connect scene graph according to described layers
@@ -156,9 +160,10 @@ void Visualizer::init(int* argcp, char** argv)
   
 	//Init audio
 	audioManager = new AudioManager();
-	fftBuf = new float[FFT_SIZE];
+	//fftBuf = new float[FFT_SIZE];
 
-	audioManager->loadSound("soundFileNameHere.mp3");
+
+	audioManager->loadSound("timescar.mp3");
 	audioManager->play();
 }
 
@@ -221,6 +226,11 @@ void Visualizer::displayCallback()
 	Matrix4 IDENTITY;
 	IDENTITY.identity();
 	scene->draw(cam.getViewMatrix(),frustum,culling);
+
+  Visualizer::getInstance()->updateScene();
+
+
+
 	glFlush();
 	glutSwapBuffers();
 }
@@ -247,7 +257,6 @@ void Visualizer::onReshape(int w, int h)
  */
 void Visualizer::idleCallback()
 {
-	Visualizer::getInstance()->updateScene();
 	displayCallback();
 }
 

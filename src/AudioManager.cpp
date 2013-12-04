@@ -211,6 +211,8 @@ bool AudioManager::getFFT(float* fftArray, int size)
 	bool isPlaying = false;
 	result = mainChannel->isPlaying(&isPlaying);
 	FMOD_ERRCHECK(result);
+  //float temp[16];
+
 	if(isPlaying)
 	{
 		result = mainChannel->getSpectrum(fftArray,size,0,FMOD_DSP_FFT_WINDOW_HANNING);
@@ -222,4 +224,9 @@ bool AudioManager::getFFT(float* fftArray, int size)
 			return true;
 	}
 	return false;
+}
+
+void AudioManager::update()
+{
+  system->update();
 }
