@@ -7,6 +7,7 @@
 #include "Matrix4.h"
 #include "ShaderGroup.h"
 #include "BezierPatch4.h"
+#include "AudioManager.h"
 
 /*
  * Main class to contain all methods for the visualizer
@@ -40,10 +41,13 @@ private:
 	Light* lights[NUM_LIGHTS];
 
 	//geometry
-  Sphere* testSphere;
+    Sphere* testSphere;
 
 	//scene graph groups
 	MatrixTransform* world;
+
+	//Audio
+	AudioManager* audioManager;
 
 public:
 	static Visualizer* getInstance(int*,char**);

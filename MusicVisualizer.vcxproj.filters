@@ -46,6 +46,9 @@
     <ClCompile Include="src\Vector4.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\AudioManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BezierPatch4.h">
@@ -93,6 +96,9 @@
     <ClInclude Include="src\visualizer.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\AudioManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
@@ -100,9 +106,13 @@
   <ItemGroup>
     <Filter Include="Header">
       <UniqueIdentifier>{0965c5c9-065f-48d5-8507-875df9e39c93}</UniqueIdentifier>
+      <Extensions>
+      </Extensions>
     </Filter>
     <Filter Include="Source">
       <UniqueIdentifier>{95d0918f-daa1-42fa-9eaa-5d107669d8f1}</UniqueIdentifier>
+      <Extensions>
+      </Extensions>
     </Filter>
   </ItemGroup>
 </Project>

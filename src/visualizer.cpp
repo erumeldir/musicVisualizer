@@ -129,6 +129,9 @@ void Visualizer::init(int* argcp, char** argv)
 	lights[0]->setPosition(20,50,30);
 	lights[0]->update();
 	lights[0]->enable();
+  
+	//Init audio
+	audioManager = new AudioManager();
 }
 
 /*
