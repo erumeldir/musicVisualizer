@@ -8,6 +8,7 @@
 #include "ShaderGroup.h"
 #include "BezierPatch4.h"
 
+
 /*
  * Main class to contain all methods for the visualizer
  * Follows the singleton pattern
