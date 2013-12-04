@@ -1,40 +1,108 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="src\BezierPatch4.cpp" />
-    <ClCompile Include="src\Camera.cpp" />
-    <ClCompile Include="src\Frustum.cpp" />
-    <ClCompile Include="src\Geometry.cpp" />
-    <ClCompile Include="src\GLee.c" />
-    <ClCompile Include="src\Light.cpp" />
-    <ClCompile Include="src\Material.cpp" />
-    <ClCompile Include="src\Matrix4.cpp" />
-    <ClCompile Include="src\ModelMatrix.cpp" />
-    <ClCompile Include="src\Node.cpp" />
-    <ClCompile Include="src\Shader.cpp" />
-    <ClCompile Include="src\ShaderGroup.cpp" />
-    <ClCompile Include="src\Vector3.cpp" />
-    <ClCompile Include="src\Vector4.cpp" />
-    <ClCompile Include="src\visualizer.cpp" />
+    <ClCompile Include="src\BezierPatch4.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\visualizer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frustum.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLee.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Material.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Matrix4.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ModelMatrix.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderGroup.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vector3.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vector4.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\BezierPatch4.h" />
-    <ClInclude Include="src\Camera.h" />
-    <ClInclude Include="src\Frustum.h" />
-    <ClInclude Include="src\Geometry.h" />
-    <ClInclude Include="src\GLee.h" />
-    <ClInclude Include="src\Light.h" />
-    <ClInclude Include="src\Material.h" />
-    <ClInclude Include="src\Matrix4.h" />
-    <ClInclude Include="src\ModelMatrix.h" />
-    <ClInclude Include="src\Node.h" />
-    <ClInclude Include="src\Shader.h" />
-    <ClInclude Include="src\ShaderGroup.h" />
-    <ClInclude Include="src\Vector3.h" />
-    <ClInclude Include="src\Vector4.h" />
-    <ClInclude Include="src\visualizer.h" />
+    <ClInclude Include="src\BezierPatch4.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frustum.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GLee.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Light.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Material.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Matrix4.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ModelMatrix.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Node.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderGroup.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vector3.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vector4.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\visualizer.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Header">
+      <UniqueIdentifier>{0965c5c9-065f-48d5-8507-875df9e39c93}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{95d0918f-daa1-42fa-9eaa-5d107669d8f1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>
