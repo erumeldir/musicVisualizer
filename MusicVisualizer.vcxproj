@@ -40,7 +40,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\David\Documents\GitHub\musicVisualizer\glut;C:\Users\David\Documents\GitHub\musicVisualizer\glut\include;C:\Users\David\Documents\GitHub\musicVisualizer\glut\include\GL;C:\Users\David\Documents\GitHub\musicVisualizer\glut\lib;C:\Users\David\Downloads\glut37 %281%29\glut-3.7;C:\Users\David\Downloads\glut37 %281%29\glut-3.7\include\GL;$(IncludePath)</IncludePath>
+    <IncludePath>.\musicVisualizer\glut;.\musicVisualizer\glut\include;.\musicVisualizer\glut\include\GL;.\musicVisualizer\glut\lib;C:\Users\David\Downloads\glut37 %281%29\glut-3.7;C:\Users\David\Downloads\glut37 %281%29\glut-3.7\include\GL;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -51,7 +51,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>C:\Users\David\Documents\GitHub\musicVisualizer\glut\lib;.\glut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>.\musicVisualizer\glut\lib;.\glut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
