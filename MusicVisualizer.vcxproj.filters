@@ -16,6 +16,7 @@
     <ClCompile Include="src\Vector3.cpp" />
     <ClCompile Include="src\Vector4.cpp" />
     <ClCompile Include="src\visualizer.cpp" />
+    <ClCompile Include="src\BezierSurface.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BezierPatch4.h" />
@@ -33,6 +34,7 @@
     <ClInclude Include="src\Vector3.h" />
     <ClInclude Include="src\Vector4.h" />
     <ClInclude Include="src\visualizer.h" />
+    <ClInclude Include="src\BezierSurface.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />

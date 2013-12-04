@@ -98,17 +98,21 @@ void Visualizer::init(int* argcp, char** argv)
   down2->localTranslate(0, -9, 0);
   // testing the bezier Patches
   controlPoints = new Vector3[16];
-  controlPoints[0] = Vector3(3, 3, -1.0); controlPoints[1] = Vector3(-0.5, -1.5, 2.0);
-  controlPoints[2] = Vector3(0.5, -1.5, -1.0);  controlPoints[3] = Vector3(1.5, -1.5, 2.0);
-  controlPoints[4] = Vector3(-1.5, -0.5, 1.0); controlPoints[5] = Vector3(-0.5, -0.5, 3.0);
-  controlPoints[6] = Vector3(0.5, -0.5, 0.0);  controlPoints[7] = Vector3(1.5, -0.5, -1.0);
-  controlPoints[8] = Vector3(-1.5, 0.5, 4.0); controlPoints[9] = Vector3(-0.5, 0.5, 0.0);
-  controlPoints[10] = Vector3(0.5, 0.5, 3.0);  controlPoints[11] = Vector3(1.5, 0.5, 4.0);
-  controlPoints[12] = Vector3(-1.5, 1.5, -2.0); controlPoints[13] = Vector3(-0.5, 1.5, -2.0);
-  controlPoints[14] = Vector3(0.5, 1.5, 0.0);  controlPoints[15] = Vector3(1.5, 1.5, -1.0);
+  controlPoints[0] = Vector3(-2, 0, -2.0); controlPoints[1] = Vector3(-1, 0, -2);
+  controlPoints[2] = Vector3(0, 0, -2.0);  controlPoints[3] = Vector3(1, -0, -2.0);
 
-  patch1 = new BezierPatch4(controlPoints);
+  controlPoints[4] = Vector3(-2, 0, -1.0); controlPoints[5] = Vector3(-1, 0, -1);
+  controlPoints[6] = Vector3(0, -0, -1.0);  controlPoints[7] = Vector3(1, 0, -1.0);
 
+  controlPoints[8] = Vector3(-2, 0, 0); controlPoints[9] = Vector3(0, 0, 0.0);
+  controlPoints[10] = Vector3(0, 0, 0);  controlPoints[11] = Vector3(1, 0, 0);
+
+  controlPoints[12] = Vector3(-2, 0, 1.0); controlPoints[13] = Vector3(-1, 0, 1);
+  controlPoints[14] = Vector3(0, 0, 1.0);  controlPoints[15] = Vector3(1, 0, 1.0);
+
+  //patch1 = new BezierPatch4(controlPoints);
+
+  patch1 = new BezierPatch4(Vector3(-2,0,-2), Vector3(1,0,-2), Vector3(-2,0,1));
 
   // Connect scene graph according to described layers
   // highest layer
@@ -189,8 +193,8 @@ void Visualizer::displayCallback()
 	//draw stuff here
 	Matrix4 IDENTITY;
 	IDENTITY.identity();
-  Vector3 randomVec(rand() % 5, rand() % 5, rand() % 5);
-  patch1->setControlPoint(0, 0, randomVec);
+ // Vector3 randomVec(rand() % 5, rand() % 5, rand() % 5);
+ // patch1->setControlPoint(0, 0, randomVec);
 	scene->draw(cam.getViewMatrix(),frustum,culling);
 	glFlush();
 	glutSwapBuffers();

@@ -16,6 +16,8 @@ protected:
   GLfloat ctrlpoints[4][4][3];    // 4x4 grid of control points
 
 public:
+  BezierPatch4();      // default constructor
+  BezierPatch4(Vector3, Vector3, Vector3); // constructor that takes the corners and makes a flat patch
   BezierPatch4(Vector3*);      // constructor that takes an array to EXACTLY 16 Vector3s.. or else!
   ~BezierPatch4();
 
