@@ -25,11 +25,19 @@ private:
     bool             fmodErrThrown; //used to check success without fatal exits/crashes
     float            distFactor;
 
+	//sounds
+	FMOD::Sound* currentStream;
+	FMOD::Channel* mainChannel;
+
+	int initFMOD();	//call the fmod init routine
+
 public:
 	AudioManager();
 	~AudioManager();
 
-	int initFMOD();	//call the fmod init routine
+	bool loadSound(char*);
+	bool play();
+	bool stop();
 };
 
 #endif

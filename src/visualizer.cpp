@@ -132,6 +132,8 @@ void Visualizer::init(int* argcp, char** argv)
   
 	//Init audio
 	audioManager = new AudioManager();
+	audioManager->loadSound("soundFileNameHere.mp3");
+	audioManager->play();
 }
 
 /*

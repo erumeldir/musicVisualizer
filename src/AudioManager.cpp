@@ -20,7 +20,7 @@ AudioManager::~AudioManager()
 }
 
 /*
- *
+ * Start FMOD with necessary options
  */
 int AudioManager::initFMOD()
 {
@@ -122,4 +122,60 @@ int AudioManager::initFMOD()
         return 1;
     else
         return 0;
+}
+
+/*
+ * Readies a sound for playback. Unloads the current sound if exists
+ */
+bool AudioManager::loadSound(char* filename)
+{
+	//TODO add sound unloading
+	result = system->createStream(filename, FMOD_DEFAULT, 0, &currentStream);
+	FMOD_ERRCHECK(result);
+	if(fmodErrThrown)
+		return false;
+	else
+		return true;
+}
+
+/*
+ * Plays the currently loaded sound
+ */
+bool AudioManager::play()
+{
+	fmodErrThrown = false;
+
+	bool isPlaying;
+	result = mainChannel->isPlaying(&isPlaying);
+	FMOD_ERRCHECK(result);
+	if(isPlaying)
+	{
+		result = mainChannel->stop();
+		FMOD_ERRCHECK(result);
+	}
+
+	if(!fmodErrThrown)
+	{
+		result = currentStream->setMode(FMOD_LOOP_OFF);
+		FMOD_ERRCHECK(result);
+		result = system->playSound(FMOD_CHANNEL_FREE, currentStream, false, &mainChannel);
+		FMOD_ERRCHECK(result);
+	}
+}
+
+/*
+ * Stops the currently loaded sound
+ */
+bool AudioManager::stop()
+{
+	fmodErrThrown = false;
+
+	bool isPlaying;
+	result = mainChannel->isPlaying(&isPlaying);
+	FMOD_ERRCHECK(result);
+	if(isPlaying)
+	{
+		result = mainChannel->stop();
+		FMOD_ERRCHECK(result);
+	}
 }
