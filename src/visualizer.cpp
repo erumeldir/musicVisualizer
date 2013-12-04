@@ -98,7 +98,7 @@ void Visualizer::init(int* argcp, char** argv)
   down2->localTranslate(0, -9, 0);
   // testing the bezier Patches
   controlPoints = new Vector3[16];
-  controlPoints[0] = Vector3(-1.5, -1.5, 4.0); controlPoints[1] = Vector3(-0.5, -1.5, 2.0);
+  controlPoints[0] = Vector3(3, 3, -1.0); controlPoints[1] = Vector3(-0.5, -1.5, 2.0);
   controlPoints[2] = Vector3(0.5, -1.5, -1.0);  controlPoints[3] = Vector3(1.5, -1.5, 2.0);
   controlPoints[4] = Vector3(-1.5, -0.5, 1.0); controlPoints[5] = Vector3(-0.5, -0.5, 3.0);
   controlPoints[6] = Vector3(0.5, -0.5, 0.0);  controlPoints[7] = Vector3(1.5, -0.5, -1.0);
@@ -189,6 +189,8 @@ void Visualizer::displayCallback()
 	//draw stuff here
 	Matrix4 IDENTITY;
 	IDENTITY.identity();
+  Vector3 randomVec(rand() % 5, rand() % 5, rand() % 5);
+  patch1->setControlPoint(0, 0, randomVec);
 	scene->draw(cam.getViewMatrix(),frustum,culling);
 	glFlush();
 	glutSwapBuffers();
