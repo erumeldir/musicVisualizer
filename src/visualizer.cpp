@@ -2,7 +2,7 @@
 #include <iostream>
 #include "visualizer.h"
 
-#define ENABLE_INIT_TESTING false
+#define ENABLE_INIT_TESTING true
 
 //initizlize visualizer instance
 bool Visualizer::instanceFlag = false;
@@ -34,20 +34,15 @@ void Visualizer::updateScene()
   audioManager->update();
 
 	//do update stuff here
-	if (blurDirUp)
-		blurSize += .0001;
-	else
-		blurSize -= .0001;
-
-	if (blurSize > .006)
-		blurDirUp = false;
-	else if (blurSize <= 0)
-		blurDirUp = true;
-
+	blurSize = 0.0;
 	bool fftSucceeded = false;
 	fftSucceeded = audioManager->getFFT(fftBuf,FFT_SIZE);
 	if(fftSucceeded)
 	{
+		if (fftBuf[7] > .17)
+			blurSize = fftBuf[7]/1000.0 + fftBuf[7]/1300.0;
+		else
+			blurSize = fftBuf[7]/1000.0;
     float barLoc;
 		//DRAW STUFF WITH NEW FFT DATA
 		for(int i=0;i<FFT_SIZE-1;i++)
@@ -56,8 +51,8 @@ void Visualizer::updateScene()
 			glLineWidth(1);
       glColor3f(1, 1, 1);
 			glBegin(GL_LINES);
-				glVertex3f((barLoc-5)*2,-5.0+(fftBuf[i]*20.0),0);
-        glVertex3f((barLoc-5)*2, -5.0, 0);
+				glVertex3f((barLoc-5)*2,-5.0+(fftBuf[i]*20.0),0.0);
+        glVertex3f((barLoc-5)*2, -5.0, 0.0);
 			glEnd();
 		}
 	}
@@ -234,7 +229,7 @@ void Visualizer::init(int* argcp, char** argv)
 		controlPoints[12] = Vector3(-1.5, 1.5, -2.0); controlPoints[13] = Vector3(-0.5, 1.5, -2.0);
 		controlPoints[14] = Vector3(0.5, 1.5, 0.0);  controlPoints[15] = Vector3(1.5, 1.5, -1.0);
 
-	//	patch1 = new BezierPatch4(controlPoints);
+		patch1 = new BezierPatch4(controlPoints);
 
 
 		// Connect scene graph according to described layers
@@ -330,7 +325,7 @@ void Visualizer::displayCallback()
 	IDENTITY.identity();
   Vector3 randomVec(rand() % 5, rand() % 5, rand() % 5);
   patch1->setControlPoint(0, 0, randomVec);
-	scene->draw(cam.getViewMatrix(),frustum,culling);
+	//scene->draw(cam.getViewMatrix(),frustum,culling);
 
   Visualizer::getInstance()->updateScene();
 
