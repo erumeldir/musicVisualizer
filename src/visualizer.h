@@ -48,6 +48,7 @@ private:
 
 	//Audio
 	AudioManager* audioManager;
+	float*        fftBuf;
 
 public:
 	static Visualizer* getInstance(int*,char**);

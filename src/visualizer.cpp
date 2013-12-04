@@ -2,6 +2,8 @@
 #include <iostream>
 #include "visualizer.h"
 
+#define FFT_SIZE 16
+
 //initizlize visualizer instance
 bool Visualizer::instanceFlag = false;
 Visualizer* Visualizer::instance = NULL;
@@ -18,6 +20,24 @@ BezierPatch4 * patch1;
 void Visualizer::updateScene()
 {
 	//do update stuff here
+	bool fftSucceeded = false;
+	fftSucceeded = audioManager->getFFT(fftBuf,FFT_SIZE);
+	if(fftSucceeded)
+	{
+		//DRAW STUFF WITH NEW FFT DATA
+		for(int i=0;i<FFT_SIZE;i++)
+		{
+			glLineWidth(2);
+			glBegin(GL_LINE);
+				glVertex3f(i-8,-5.0+(fftBuf[i]*10.0),0);
+				glVertex3f(i-8,-5.0,0);
+			glEnd();
+		}
+	}
+	else
+	{
+		cout << "FFT ERROR!" << endl;
+	}
 
 }
 
@@ -132,8 +152,10 @@ void Visualizer::init(int* argcp, char** argv)
   
 	//Init audio
 	audioManager = new AudioManager();
+	fftBuf = new float[FFT_SIZE];
 	audioManager->loadSound("soundFileNameHere.mp3");
 	audioManager->play();
+	
 }
 
 /*
