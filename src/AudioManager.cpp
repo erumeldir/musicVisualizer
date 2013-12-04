@@ -4,11 +4,12 @@
 using namespace std;
 
 /*
- *
+ * Takes in a size for the fft window. Should be a power of 2
  */
 AudioManager::AudioManager()
 {
 	initFMOD();
+	currentStream = NULL;
 }
 
 /*
@@ -130,6 +131,7 @@ int AudioManager::initFMOD()
 bool AudioManager::loadSound(char* filename)
 {
 	//TODO add sound unloading
+
 	result = system->createStream(filename, FMOD_DEFAULT, 0, &currentStream);
 	FMOD_ERRCHECK(result);
 	if(fmodErrThrown)
@@ -145,7 +147,7 @@ bool AudioManager::play()
 {
 	fmodErrThrown = false;
 
-	bool isPlaying;
+	bool isPlaying = false;
 	result = mainChannel->isPlaying(&isPlaying);
 	FMOD_ERRCHECK(result);
 	if(isPlaying)
@@ -154,13 +156,26 @@ bool AudioManager::play()
 		FMOD_ERRCHECK(result);
 	}
 
-	if(!fmodErrThrown)
+	//nothing on channel or channel uninitialized (free)
+	if(result == 36)
+	{
+		fmodErrThrown = false;
+	}
+
+	if(!fmodErrThrown && currentStream != NULL)
 	{
 		result = currentStream->setMode(FMOD_LOOP_OFF);
 		FMOD_ERRCHECK(result);
 		result = system->playSound(FMOD_CHANNEL_FREE, currentStream, false, &mainChannel);
 		FMOD_ERRCHECK(result);
+
+		if(fmodErrThrown)
+			return false;
+		else
+			return true;
 	}
+
+	return false;
 }
 
 /*
@@ -170,12 +185,41 @@ bool AudioManager::stop()
 {
 	fmodErrThrown = false;
 
-	bool isPlaying;
+	bool isPlaying = false;
 	result = mainChannel->isPlaying(&isPlaying);
 	FMOD_ERRCHECK(result);
 	if(isPlaying)
 	{
 		result = mainChannel->stop();
 		FMOD_ERRCHECK(result);
+
+		if(fmodErrThrown)
+			return false;
+		else
+			return true;
 	}
+	return false;
+}
+
+/*
+ * Get the fft at the current time in the channel
+ */
+bool AudioManager::getFFT(float* fftArray, int size)
+{
+	fmodErrThrown = false;
+
+	bool isPlaying = false;
+	result = mainChannel->isPlaying(&isPlaying);
+	FMOD_ERRCHECK(result);
+	if(isPlaying)
+	{
+		result = mainChannel->getSpectrum(fftArray,size,0,FMOD_DSP_FFT_WINDOW_HANNING);
+		FMOD_ERRCHECK(result);
+
+		if(fmodErrThrown)
+			return false;
+		else
+			return true;
+	}
+	return false;
 }

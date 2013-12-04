@@ -38,6 +38,8 @@ public:
 	bool loadSound(char*);
 	bool play();
 	bool stop();
+
+	bool getFFT(float*,int);
 };
 
 #endif
