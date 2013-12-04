@@ -1,12 +1,15 @@
 #ifndef _VISUALIZER_H_
 #define _VISUALIZER_H_
 
+#define FFT_SIZE 2048
+
 #include "Geometry.h"
 #include "Light.h"
 #include "Camera.h"
 #include "Matrix4.h"
 #include "ShaderGroup.h"
 #include "BezierPatch4.h"
+#include "AudioManager.h"
 
 
 /*
@@ -41,10 +44,15 @@ private:
 	Light* lights[NUM_LIGHTS];
 
 	//geometry
-  Sphere* testSphere;
+    Sphere* testSphere;
 
 	//scene graph groups
 	MatrixTransform* world;
+
+	//Audio
+	AudioManager* audioManager;
+	//float*        fftBuf;
+  float fftBuf[FFT_SIZE];
 
 public:
 	static Visualizer* getInstance(int*,char**);

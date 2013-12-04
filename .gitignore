@@ -27,3 +27,9 @@ Debug\*
 *.sdf
 /ipch*
 \ipch*
+
+#audio
+*.mp3
+*.wav
+*.ogg
+*.aac
