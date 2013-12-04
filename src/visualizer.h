@@ -11,6 +11,7 @@
 #include "BezierPatch4.h"
 #include "AudioManager.h"
 
+
 /*
  * Main class to contain all methods for the visualizer
  * Follows the singleton pattern

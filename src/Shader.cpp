@@ -61,6 +61,13 @@ Shader::unbind()
   currentShader = previousShader;
 }
 
+void Shader::uniform1f(const GLchar *name, float val)
+{
+	GLuint p;
+	int i = glGetUniformLocation(p,name);
+	glUniform1f(i, val);
+}
+
 void
 Shader::printLog(const char* tag)
 {
