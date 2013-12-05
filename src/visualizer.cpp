@@ -2,6 +2,8 @@
 #include <iostream>
 #include "visualizer.h"
 
+#define NUM_BANDS 16    // number of bands
+
 //initizlize visualizer instance
 bool Visualizer::instanceFlag = false;
 Visualizer* Visualizer::instance = NULL;
@@ -11,6 +13,7 @@ Shader* testShader3;
 
 Vector3* controlPoints;
 BezierPatch4 * patch1;
+BezierSurface * surface;
 
 
 
@@ -71,62 +74,20 @@ void Visualizer::init(int* argcp, char** argv)
 	world = new MatrixTransform();
 	world->reset();	//reset to identity
 
-	//TESTING, replace with scene stuff
-	testSphere = new Sphere(6,20,20);
-	world->addChild(testSphere);
-
   // TESTING: ShaderGroup object turns things blue to test shadergroup
-  testShader = new Shader("shaders/simpleBlue.vert", "shaders/simpleBlue.frag", true);
-  testShader2 = new Shader("shaders/simpleRed.vert", "shaders/simpleRed.frag", true);
   testShader3 = new Shader("shaders/simpleGreen.vert", "shaders/simpleGreen.frag", true);
-  ShaderGroup* testShad = new ShaderGroup(testShader);
-  ShaderGroup* testShad2 = new ShaderGroup(testShader2);
   ShaderGroup* testShad3 = new ShaderGroup(testShader3);
 
   // Highest layer: Transform up right and apply blue shader
   MatrixTransform* right = new MatrixTransform();
-  right->localTranslate(10, 10, 0);
-  Sphere* testSphere2 = new Sphere(3, 10, 10);
+  right->localTranslate(0, -8, 0);
+  
+  // test bezier surface
+  surface = new BezierSurface(NUM_BANDS, 3);
 
-  // Second layer: Transform below the highest layer and apply red shader
-  MatrixTransform* down = new MatrixTransform();
-  down->localTranslate(0, -9, 0);
-  Sphere* testSphere3 = new Sphere(3, 10, 10);
-
-  // Third layer: Transform below second layer and apply green shader
-  MatrixTransform* down2 = new MatrixTransform();
-  down2->localTranslate(0, -9, 0);
-  // testing the bezier Patches
-  controlPoints = new Vector3[16];
-  controlPoints[0] = Vector3(-2, 0, -2.0); controlPoints[1] = Vector3(-1, 0, -2);
-  controlPoints[2] = Vector3(0, 0, -2.0);  controlPoints[3] = Vector3(1, -0, -2.0);
-
-  controlPoints[4] = Vector3(-2, 0, -1.0); controlPoints[5] = Vector3(-1, 0, -1);
-  controlPoints[6] = Vector3(0, -0, -1.0);  controlPoints[7] = Vector3(1, 0, -1.0);
-
-  controlPoints[8] = Vector3(-2, 0, 0); controlPoints[9] = Vector3(0, 0, 0.0);
-  controlPoints[10] = Vector3(0, 0, 0);  controlPoints[11] = Vector3(1, 0, 0);
-
-  controlPoints[12] = Vector3(-2, 0, 1.0); controlPoints[13] = Vector3(-1, 0, 1);
-  controlPoints[14] = Vector3(0, 0, 1.0);  controlPoints[15] = Vector3(1, 0, 1.0);
-
-  //patch1 = new BezierPatch4(controlPoints);
-
-  patch1 = new BezierPatch4(Vector3(-2,0,-2), Vector3(1,0,-2), Vector3(-2,0,1));
-
-  // Connect scene graph according to described layers
-  // highest layer
-  world->addChild(testShad);
-  testShad->addChild(right);
-  right->addChild(testSphere2);
-  right->addChild(down);
-  // second layer
-  down->addChild(testShad2);
-  down->addChild(down2);
-  testShad2->addChild(testSphere3);
-  // third layer
-  down2->addChild(testShad3);
-  testShad3->addChild(patch1);
+  testShad3->addChild(surface);
+  right->addChild(testShad3);
+  world->addChild(right);
 
 	//light the scene
 	lights[0] = new DirectionalLight(GL_LIGHT0);
@@ -231,8 +192,19 @@ void Visualizer::idleCallback()
  */
 void Visualizer::onKeyboard(unsigned char key, int x, int y)
 {
+  double amps[NUM_BANDS];
 	switch(key)
 	{
+  case 'a':
+    for (int i = 0; i < NUM_BANDS; i++)
+    {
+      amps[i] = rand() % 5;
+    }
+    surface->addBand(amps);
+    break;
+  case 'r':
+    Visualizer::getInstance()->world->localRotateY(.05);
+    break;
 	default:
 		break;
 	}

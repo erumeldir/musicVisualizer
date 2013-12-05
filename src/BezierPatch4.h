@@ -2,6 +2,8 @@
 #include "glut.h"
 #include "Geometry.h"
 
+#define NUM_CONTROL_POINTS 16
+
 /******************************************************************************
  * BezierPatch4
  * 
@@ -14,6 +16,7 @@ class BezierPatch4: public Geode
 {
 protected:
   GLfloat ctrlpoints[4][4][3];    // 4x4 grid of control points
+  double amplitude;               // y direction height based on the band
 
 public:
   BezierPatch4();      // default constructor
@@ -22,7 +25,15 @@ public:
   ~BezierPatch4();
 
   void setControlPoints(Vector3*);  // takes array to 16 Vector3s and changes the control points
-  void setControlPoint(int,int,Vector3); // changes the value of a single control point
+  void setControlPoint(int, int, Vector3); // changes the value of a single control point
+  Vector3 getControlPoint(int, int); // gets the value of a single control point
+
+  // Sound amplitude functions
+  void copyAmplitude(BezierPatch4); // copies the amplitude of the given patch
+  void setAmplitude(double);  // sets the amplitude of the patch (the y value representing the sound)
+  double getAmplitude(); // gets the amplitude of a patch
+  void join(BezierPatch4 top, BezierPatch4 corner, BezierPatch4 right); // connects the current patch to the adjacent ones
+
 
   void draw(Matrix4 C, Frustum F, bool checkCulling); // draws the bezier curve
   void computeBoundingSphere(Matrix4 C);
