@@ -13,17 +13,17 @@
 
 #include "BezierPatch4.h"
 
-#define patchSize 2
-
 class BezierSurface : public Geode
 {
 protected:
   int numPatches; // how many patches we want to represent; numBands - 1 is how many patches we need 
   int maxTime;  // how many rows in the Z direction we want
+  double patchSize; // x and z size of the patches/bands to be displayed
+  double heightScale; // how much to scale the height by when adding an amplitude
   BezierPatch4** surface; // multidimensional array of Bezier patches representing the surface
 
 public:
-  BezierSurface(int bands, int time);
+  BezierSurface(int bands, int time, double pSize, double hScale = 1);
   ~BezierSurface();
 
   // getter for a patch

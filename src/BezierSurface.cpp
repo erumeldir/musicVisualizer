@@ -1,9 +1,11 @@
 #include "BezierSurface.h"
 
-BezierSurface::BezierSurface(int bands, int time)
+BezierSurface::BezierSurface(int bands, int time, double pSize, double hScale)
 {
   numPatches = bands - 1;
   maxTime = time;
+  patchSize = pSize;
+  heightScale = hScale;
 
   // create multi dimensional array of patches
   surface = new BezierPatch4*[numPatches];
@@ -77,7 +79,7 @@ bool BezierSurface::addBand(double * amps)
   for (int i = 0; i < numPatches; i++)
   {
     BezierPatch4 current = surface[i][maxTime - 1];
-    current.setAmplitude(amps[i]);
+    current.setAmplitude(amps[i]*heightScale);
 
     // make initial Bezier patch square 
     surface[i][maxTime - 1] = current;

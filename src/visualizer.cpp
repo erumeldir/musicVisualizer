@@ -80,10 +80,10 @@ void Visualizer::init(int* argcp, char** argv)
 
   // Highest layer: Transform up right and apply blue shader
   MatrixTransform* right = new MatrixTransform();
-  right->localTranslate(0, -8, 0);
+  right->localTranslate(0, -8, -8);
   
   // test bezier surface
-  surface = new BezierSurface(NUM_BANDS, 3);
+  surface = new BezierSurface(NUM_BANDS, 10, 1.7);
 
   testShad3->addChild(surface);
   right->addChild(testShad3);
