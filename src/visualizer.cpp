@@ -83,7 +83,7 @@ void Visualizer::init(int* argcp, char** argv)
   right->localTranslate(0, -8, -8);
   
   // test bezier surface
-  surface = new BezierSurface(NUM_BANDS, 10, 1.7);
+  surface = new BezierSurface(NUM_BANDS, 15, 1.7,.5,1,1);
 
   testShad3->addChild(surface);
   right->addChild(testShad3);

@@ -1,30 +1,34 @@
 #include "BezierSurface.h"
 
-BezierSurface::BezierSurface(int bands, int time, double pSize, double hScale)
+BezierSurface::BezierSurface(int bands, int time, double pSize, double xScal, double yScal, double zScal)
 {
+  // variables dealing with the number of patches
   numPatches = bands - 1;
   maxTime = time;
+  // variables dealing with size and scale of patches
   patchSize = pSize;
-  heightScale = hScale;
+  xScale = xScal;
+  yScale = yScal;
+  zScale = zScal;
 
-  // create multi dimensional array of patches
+  // create multi dimensional array of bezier patches
   surface = new BezierPatch4*[numPatches];
   for (int i = 0; i < numPatches; i++)
     surface[i] = new BezierPatch4[time];
   
   // upper and left bounds of the xz plane
-  double left = numPatches / 2.0 * -1 * patchSize;
-  double top = maxTime/2.0*-1 * patchSize;
+  double left = numPatches / 2.0 * -1 * patchSize*xScale;
+  double top = maxTime/2.0*-1 * patchSize*zScale;
 
-  // initialization
+  // initialization of each patch (start at height zero)
   for (int i = 0; i < numPatches; i++)
   {
     for (int j = 0; j < maxTime; j++)
     {
       // upper and lower bounds of the current patch
-      Vector3 topLeft(left + i*patchSize, 0, top + j*patchSize);
-      Vector3 topRight(left + (i +1)* patchSize, 0, top + j*patchSize);
-      Vector3 bottom(left + i*patchSize, 0, top + (j+1)* patchSize);
+      Vector3 topLeft(left + i*patchSize*xScale, 0, top + j*patchSize*zScale);
+      Vector3 topRight(left + (i + 1)* patchSize*xScale, 0, top + j*patchSize*zScale);
+      Vector3 bottom(left + i*patchSize*xScale, 0, top + (j + 1)* patchSize*zScale);
 
       // make initial Bezier patch square 
       surface[i][j] = BezierPatch4(topLeft, topRight, bottom);
@@ -34,7 +38,8 @@ BezierSurface::BezierSurface(int bands, int time, double pSize, double hScale)
 
 BezierSurface::~BezierSurface()
 {
-  // TODO: delete your array
+  // delete array of objects
+  delete[] surface;
 }
 
 // draws the bezier surface. Initially it is a flat surface
@@ -75,27 +80,21 @@ bool BezierSurface::addBand(double * amps)
   pushBack();
 
   // add the new band to the bottom row
-  // zero out the last row
-  for (int i = 0; i < numPatches; i++)
-  {
-    BezierPatch4 current = surface[i][maxTime - 1];
-    current.setAmplitude(amps[i]*heightScale);
-
-    // make initial Bezier patch square 
-    surface[i][maxTime - 1] = current;
-  }
-
-  // join them together
   for (int i = 0; i < numPatches-1; i++)
   {
-    // get the current and next patch for their amplitudes
-    BezierPatch4 nextPatch = surface[i+1][maxTime - 1];
-    // get patches above
-    BezierPatch4 topPatch = surface[i][maxTime - 2];
-    BezierPatch4 cornerPatch = surface[i + 1][maxTime - 2];
+    // set amplitude of patches
+    BezierPatch4* current = &(surface[i][maxTime - 1]);
+    BezierPatch4* nextPatch = &(surface[i + 1][maxTime - 1]);
+    current->setAmplitude(amps[i] * yScale);
+    nextPatch->setAmplitude(amps[i + 1] * yScale);
 
-    surface[i][maxTime - 1].join(topPatch, cornerPatch, nextPatch);
+    // join patches of the new band together
+    BezierPatch4* topPatch = &(surface[i][maxTime - 2]);
+    surface[i][maxTime - 1].join(topPatch, nextPatch);
   }
+
+  // join the last band
+  surface[numPatches - 1][maxTime - 1].join(&(surface[numPatches - 1][maxTime - 2]), 0, amps[numPatches]);
 
   return true;
 }
@@ -103,10 +102,11 @@ bool BezierSurface::addBand(double * amps)
 /*
  * pushBack
  *
- * Push all of the rows back one and zero out the front row
+ * Push all of the rows back one and zero out amplitudes of the front row
  */
 void BezierSurface::pushBack()
 {
+  // move all of the patches back a row on the z plane
   for (int i = 0; i < numPatches; i++)
   {
     for (int j = 0; j < maxTime-1; j++)
@@ -114,7 +114,6 @@ void BezierSurface::pushBack()
       // get the current and next patch for their amplitudes
       BezierPatch4 currPatch = surface[i][j];
       BezierPatch4 nextPatch = surface[i][j + 1];
-      currPatch.setAmplitude(nextPatch.getAmplitude());
       // get all the y values from the next patch
       currPatch.copyAmplitude(nextPatch);
 
@@ -123,17 +122,16 @@ void BezierSurface::pushBack()
     }
   }
 
-
   // upper and left bounds of the xz plane
-  double left = numPatches / 2.0 * -1 * patchSize;
-  double top = maxTime / 2.0*-1 * patchSize;
+  double left = numPatches / 2.0 * -1 * patchSize*xScale;
+  double top = maxTime / 2.0*-1 * patchSize*zScale;
 
-  // zero out the last row
+  // zero out the front row
   for (int i = 0; i < numPatches; i++)
   {
-    Vector3 topLeft(left + i*patchSize, 0, top + (maxTime - 1)*patchSize);
-    Vector3 topRight(left + (i + 1)* patchSize, 0, top + (maxTime - 1)*patchSize);
-    Vector3 bottom(left + i*patchSize, 0, top + (maxTime)* patchSize);
+    Vector3 topLeft(left + i*patchSize*xScale, 0, top + (maxTime - 1)*patchSize*zScale);
+    Vector3 topRight(left + (i + 1)* patchSize*xScale, 0, top + (maxTime - 1)*patchSize*zScale);
+    Vector3 bottom(left + i*patchSize*xScale, 0, top + (maxTime)* patchSize*zScale);
 
     // make initial Bezier patch square 
     surface[i][maxTime - 1] = BezierPatch4(topLeft, topRight, bottom);

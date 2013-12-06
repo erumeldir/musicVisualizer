@@ -132,9 +132,14 @@ void BezierPatch4::computeBoundingSphere(Matrix4 C)
 {
 }
 
-// copies the amplitude of the given patch
+/*
+ * copyAmplitude
+ * copies the amplitude and the respective y values of
+ * the given patch to the current patch.
+ */
 void BezierPatch4::copyAmplitude(BezierPatch4 other)
 {
+  setAmplitude(other.getAmplitude());
   for (int i = 0; i < 4; i++)
   {
     for (int j = 0; j < 4; j++)
@@ -145,23 +150,19 @@ void BezierPatch4::copyAmplitude(BezierPatch4 other)
 }
 
 
-// sets the amplitude of a patch to given value
+/*
+ * setAmplitude
+ * 
+ * Sets the amplitude and all the y values of the patch to
+ * the given amplitude
+ */
 void BezierPatch4::setAmplitude(double amp)
 {
   amplitude = amp;
-
-  // convert control points into array of floats
+  // set all of the y values of the current patch to amp
   for (int i = 0; i < 4; i++)
-  {
     for (int j = 0; j < 4; j++)
-    {
-
-      // set control point accordingly
       ctrlpoints[i][j][1] = amp;
-    }
-  }
-
-  // follow this with connecting each of the points to the surrounding patches
 }
 
 double BezierPatch4::getAmplitude()
@@ -175,28 +176,39 @@ double BezierPatch4::getAmplitude()
  * Connects the current patch to three other patches assuming that the calling
  * object is the lower left corner
  */
-void BezierPatch4::join(BezierPatch4 top, BezierPatch4 corner, BezierPatch4 right)
+void BezierPatch4::join(BezierPatch4* top, BezierPatch4* right, double edgeAmp)
 {
   // join top edge
   for (int i = 0; i < 4; i++)
   {
     // bottom of the top patch
-    Vector3 topPoint = top.getControlPoint(i,3);
+    Vector3 topPoint = top->getControlPoint(i,3);
     // connect current patch to bottom of top
     setControlPoint(i,0,topPoint);
   }
 
   // join right edge
-  for (int i = 1; i <= 3; i++)
+  if (right)
   {
-    // left of the right patch
-    Vector3 rightPoint = right.getControlPoint(0, i);
-    // right of current
-    Vector3 currPoint = getControlPoint(3,i);
+    for (int i = 1; i <= 3; i++)
+    {
+      // left of the right patch
+      Vector3 rightPoint = right->getControlPoint(0, i);
+      // right of current
+      Vector3 currPoint = getControlPoint(3,i);
 
-    // set both points y coord to the midpoint
-    right.setControlPoint(0, i, Vector3(rightPoint.get(0), currPoint.get(1), rightPoint.get(2)));
-    setControlPoint(3, i, Vector3(currPoint.get(0), rightPoint.get(1), currPoint.get(2)));
+      // set both points y coord to the midpoint
+      setControlPoint(3, i, Vector3(currPoint.get(0), rightPoint.get(1), currPoint.get(2)));
+    }
+  }
+  else{
+    // set the far right edge amplitude
+    for (int i = 1; i <= 3; i++)
+    {
+      Vector3 currPoint = getControlPoint(3, i);
+      // set both points y coord to the midpoint
+      setControlPoint(3, i, Vector3(currPoint.get(0), edgeAmp, currPoint.get(2)));
+    }
   }
 }
 
