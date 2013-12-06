@@ -15,6 +15,10 @@
 class AudioManager
 {
 private:
+	static float MAX_BAND;
+	static float MIN_SPECTRUM_FREQ;
+	static float BOTTOM_SPECTRUM_FREQ;
+
 	FMOD::System*    system;
 	FMOD_RESULT		 result;
 	unsigned int     version;
@@ -40,6 +44,7 @@ public:
 	bool stop();
 
 	bool getFFT(float*,int);
+	bool getLogFFT(float*,int,float*,int);
   void update();
 };
 
