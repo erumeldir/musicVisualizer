@@ -30,7 +30,7 @@ public:
 
   // getter for a patch
 
-  bool addBand(double*); // an array of "numBands" number of bands that gets added to the front
+  bool addBand(float*); // an array of "numBands" number of bands that gets added to the front
   void pushBack(); // pushes all of the rows of the surface back a row and zeros out the front row
 
   // overidden Geode methods

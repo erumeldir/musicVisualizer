@@ -2,7 +2,6 @@
 #include <iostream>
 #include "visualizer.h"
 
-#define NUM_BANDS 16    // number of bands
 #define ENABLE_INIT_TESTING false
 
 //initizlize visualizer instance
@@ -38,10 +37,11 @@ void Visualizer::updateScene()
 	//do update stuff here
 	blurSize = 0.0;
 	bool fftSucceeded = false;
-	fftSucceeded = audioManager->getFFT(fftBuf,FFT_SIZE);
+	 fftSucceeded = audioManager->getFFT(fftBuf,FFT_SIZE);
+  //fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
 	if(fftSucceeded)
 	{
-		if (fftBuf[7] > .17)
+	/*	if (fftBuf[7] > .17)
 			blurSize = fftBuf[7]/1000.0 + fftBuf[7]/1300.0;
 		else
 			blurSize = fftBuf[7]/1000.0;
@@ -68,7 +68,9 @@ void Visualizer::updateScene()
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0+(fftBands[i]*20.0),0.0);
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
 			glEnd();
-		}
+		}*/
+    fftSucceeded = audioManager->getLogFFT(fftBuf, FFT_SIZE, fftBands, FFT_NUM_BANDS);
+    surface->addBand(fftBands);
 	}
 	else
 	{
@@ -213,7 +215,7 @@ void Visualizer::init(int* argcp, char** argv)
   right->localTranslate(0, -8, -8);
   
   // test bezier surface
-  surface = new BezierSurface(NUM_BANDS, 15, 1.7,.5,1,1);
+  surface = new BezierSurface(FFT_NUM_BANDS, 15, 1,.8,40,1);
 
   testShad3->addChild(surface);
   right->addChild(testShad3);
@@ -483,16 +485,8 @@ void Visualizer::idleCallback()
  */
 void Visualizer::onKeyboard(unsigned char key, int x, int y)
 {
-  double amps[NUM_BANDS];
 	switch(key)
 	{
-  case 'a':
-    for (int i = 0; i < NUM_BANDS; i++)
-    {
-      amps[i] = rand() % 5;
-    }
-    surface->addBand(amps);
-    break;
   case 'r':
     Visualizer::getInstance()->world->localRotateY(.05);
     break;

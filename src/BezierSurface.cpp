@@ -74,7 +74,7 @@ void BezierSurface::computeBoundingSphere(Matrix4 C)
  * 
  * returns true if successful otherwise false
  */
-bool BezierSurface::addBand(double * amps)
+bool BezierSurface::addBand(float * amps)
 {
   // push all the bands back
   pushBack();

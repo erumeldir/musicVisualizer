@@ -2,7 +2,7 @@
 #define _VISUALIZER_H_
 
 #define FFT_SIZE      2048
-#define FFT_NUM_BANDS 128
+#define FFT_NUM_BANDS 64
 
 #include "Geometry.h"
 #include "Light.h"
