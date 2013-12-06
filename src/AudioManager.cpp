@@ -267,14 +267,14 @@ bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, int
 				if(numFreqSummed == 0)
 					bandArray[currentBand] = 0;
 				else
-					bandArray[currentBand] = freqSum/numFreqSummed;
+					bandArray[currentBand] = pow((freqSum/(double)numFreqSummed),(1.0/4.0));
 
 				//inc band and reset sums
 				currentBand++;
 				freqSum = numFreqSummed = 0.0;
 			}
 
-			freqSum += fftArray[i];
+			freqSum += pow(fftArray[i],4);
 			numFreqSummed++;
 		}
 	}

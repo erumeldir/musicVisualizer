@@ -41,7 +41,7 @@ void Visualizer::updateScene()
   //fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
 	if(fftSucceeded)
 	{
-	/*	if (fftBuf[7] > .17)
+		if (fftBuf[7] > .17)
 			blurSize = fftBuf[7]/1000.0 + fftBuf[7]/1300.0;
 		else
 			blurSize = fftBuf[7]/1000.0;
@@ -54,22 +54,22 @@ void Visualizer::updateScene()
 			glLineWidth(1);
 			glColor3f(1, 1, 1);
 			glBegin(GL_LINES);
-				glVertex3f((barLoc-5)*2,-5.0+(fftBuf[i]*20.0),0.0);
+				glVertex3f((barLoc-5)*2,-5.0+(fftBuf[i]*40.0),0.0);
 				glVertex3f((barLoc-5)*2, -5.0, 0.0);
 			glEnd();
 		}
 		//test logfft stuff
 		fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
-		for(int i=0;i<FFT_NUM_BANDS;i++)
+		for(int i=START_BAND;i<BANDS_IN_USE+START_BAND;i++)
 		{
 			glLineWidth(4.5);
 			glColor3f(1, 1, 1);
 			glBegin(GL_LINES);
-				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0+(fftBands[i]*20.0),0.0);
+				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0+( (log(fftBands[i]*0.95+0.05)/log(20.0) + 1) * 20.0),0.0);
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
 			glEnd();
-		}*/
-    fftSucceeded = audioManager->getLogFFT(fftBuf, FFT_SIZE, fftBands, FFT_NUM_BANDS);
+		}
+    //fftSucceeded = audioManager->getLogFFT(fftBuf, FFT_SIZE, fftBands, FFT_NUM_BANDS);
     surface->addBand(fftBands);
 	}
 	else
@@ -217,8 +217,8 @@ void Visualizer::init(int* argcp, char** argv)
   // test bezier surface
   surface = new BezierSurface(FFT_NUM_BANDS, 15, 1,.8,40,1);
 
-  testShad3->addChild(surface);
-  right->addChild(testShad3);
+  //testShad3->addChild(surface);
+  right->addChild(surface);
   world->addChild(right);
 
 	//testing code
@@ -288,8 +288,7 @@ void Visualizer::init(int* argcp, char** argv)
 	audioManager = new AudioManager();
 	//fftBuf = new float[FFT_SIZE];
 
-
-	audioManager->loadSound("timescar.mp3");
+	audioManager->loadSound("Beethoven.mp3");
 	audioManager->play();
 }
 
