@@ -1,5 +1,5 @@
 #include <stdlib.h>
-#include "glut.h"
+#include "GL\glut.h"
 #include "Geometry.h"
 
 #define NUM_CONTROL_POINTS 16
