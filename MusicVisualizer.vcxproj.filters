@@ -49,6 +49,9 @@
     <ClCompile Include="src\AudioManager.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\BezierSurface.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BezierPatch4.h">
@@ -98,6 +101,9 @@
     </ClInclude>
     <ClInclude Include="src\AudioManager.h">
       <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BezierSurface.h">
+      <Filter>Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

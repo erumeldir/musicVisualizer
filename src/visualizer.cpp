@@ -2,7 +2,7 @@
 #include <iostream>
 #include "visualizer.h"
 
-#define ENABLE_INIT_TESTING true
+#define ENABLE_INIT_TESTING false
 
 //initizlize visualizer instance
 bool Visualizer::instanceFlag = false;
@@ -22,6 +22,7 @@ GLuint uni_fbo_texture_verticalGaussian, uni_fbo_texture_horizontalGaussian;
 
 Vector3* controlPoints;
 BezierPatch4 * patch1;
+BezierSurface * surface;
 
 float blurSize = 0.000;
 bool blurDirUp = true;
@@ -36,10 +37,11 @@ void Visualizer::updateScene()
 	//do update stuff here
 	blurSize = 0.0;
 	bool fftSucceeded = false;
-	fftSucceeded = audioManager->getFFT(fftBuf,FFT_SIZE);
+	 fftSucceeded = audioManager->getFFT(fftBuf,FFT_SIZE);
+  //fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
 	if(fftSucceeded)
 	{
-		if (fftBuf[7] > .17)
+	/*	if (fftBuf[7] > .17)
 			blurSize = fftBuf[7]/1000.0 + fftBuf[7]/1300.0;
 		else
 			blurSize = fftBuf[7]/1000.0;
@@ -66,7 +68,9 @@ void Visualizer::updateScene()
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0+(fftBands[i]*20.0),0.0);
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
 			glEnd();
-		}
+		}*/
+    fftSucceeded = audioManager->getLogFFT(fftBuf, FFT_SIZE, fftBands, FFT_NUM_BANDS);
+    surface->addBand(fftBands);
 	}
 	else
 	{
@@ -202,6 +206,21 @@ void Visualizer::init(int* argcp, char** argv)
 	world = new MatrixTransform();
 	world->reset();	//reset to identity
 
+  // TESTING: ShaderGroup object turns things blue to test shadergroup
+  testShader3 = new Shader("shaders/simpleGreen.vert", "shaders/simpleGreen.frag", true);
+  ShaderGroup* testShad3 = new ShaderGroup(testShader3);
+
+  // Highest layer: Transform up right and apply blue shader
+  MatrixTransform* right = new MatrixTransform();
+  right->localTranslate(0, -8, -8);
+  
+  // test bezier surface
+  surface = new BezierSurface(FFT_NUM_BANDS, 15, 1,.8,40,1);
+
+  testShad3->addChild(surface);
+  right->addChild(testShad3);
+  world->addChild(right);
+
 	//testing code
 	if(ENABLE_INIT_TESTING)
 	{
@@ -335,9 +354,9 @@ void Visualizer::displayCallback()
 	//draw stuff here
 	Matrix4 IDENTITY;
 	IDENTITY.identity();
-  Vector3 randomVec(rand() % 5, rand() % 5, rand() % 5);
-  patch1->setControlPoint(0, 0, randomVec);
-	//scene->draw(cam.getViewMatrix(),frustum,culling);
+ // Vector3 randomVec(rand() % 5, rand() % 5, rand() % 5);
+ // patch1->setControlPoint(0, 0, randomVec);
+	scene->draw(cam.getViewMatrix(),frustum,culling);
 
   Visualizer::getInstance()->updateScene();
 
@@ -468,6 +487,9 @@ void Visualizer::onKeyboard(unsigned char key, int x, int y)
 {
 	switch(key)
 	{
+  case 'r':
+    Visualizer::getInstance()->world->localRotateY(.05);
+    break;
 	default:
 		break;
 	}
