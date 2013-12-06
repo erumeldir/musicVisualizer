@@ -43,23 +43,35 @@ void Visualizer::updateScene()
 			blurSize = fftBuf[7]/1000.0 + fftBuf[7]/1300.0;
 		else
 			blurSize = fftBuf[7]/1000.0;
-    float barLoc;
+		float barLoc;
+
 		//DRAW STUFF WITH NEW FFT DATA
 		for(int i=0;i<FFT_SIZE-1;i++)
 		{
-      barLoc = log(i*(22050.0/FFT_SIZE));
+			barLoc = log(i*(22050.0/FFT_SIZE));
 			glLineWidth(1);
-      glColor3f(1, 1, 1);
+			glColor3f(1, 1, 1);
 			glBegin(GL_LINES);
 				glVertex3f((barLoc-5)*2,-5.0+(fftBuf[i]*20.0),0.0);
-        glVertex3f((barLoc-5)*2, -5.0, 0.0);
+				glVertex3f((barLoc-5)*2, -5.0, 0.0);
+			glEnd();
+		}
+		//test logfft stuff
+		fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
+		for(int i=0;i<FFT_NUM_BANDS;i++)
+		{
+			glLineWidth(4.5);
+			glColor3f(1, 1, 1);
+			glBegin(GL_LINES);
+				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0+(fftBands[i]*20.0),0.0);
+				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
 			glEnd();
 		}
 	}
 	else
 	{
 		cout << "FFT ERROR!" << endl;
-	}
+	}	
 }
 
 

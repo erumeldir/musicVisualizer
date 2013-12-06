@@ -1,7 +1,12 @@
 #include "AudioManager.h"
 #include <iostream>
+#include <math.h>
 
 using namespace std;
+
+float AudioManager::MAX_BAND = 14.427473;
+float AudioManager::MIN_SPECTRUM_FREQ = 20;
+float AudioManager::BOTTOM_SPECTRUM_FREQ = 60;
 
 /*
  * Takes in a size for the fft window. Should be a power of 2
@@ -211,13 +216,13 @@ bool AudioManager::getFFT(float* fftArray, int size)
 	bool isPlaying = false;
 	result = mainChannel->isPlaying(&isPlaying);
 	FMOD_ERRCHECK(result);
-  //float temp[16];
 
 	if(isPlaying)
 	{
 		result = mainChannel->getSpectrum(fftArray,size,0,FMOD_DSP_FFT_WINDOW_HANNING);
 		FMOD_ERRCHECK(result);
 
+		//TODO set spectrum to 0s
 		if(fmodErrThrown)
 			return false;
 		else
@@ -226,6 +231,59 @@ bool AudioManager::getFFT(float* fftArray, int size)
 	return false;
 }
 
+/*
+ * Get a equal division band log fft at the current time in the channel
+ * The current method used is fairly expensive because it averages all frequencies that
+ * fall in a current log band. (Higher frequency ranges might not need as many averages 
+ * since everything is very compressed visually). TODO: Optimize & Detect missing bands
+ */
+bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, int bands)
+{
+	//reset the bands
+	for(int i=0; i<bands; i++)
+	{
+		bandArray[i] = 0.0;
+	}
+
+	//compute fft
+	if(getFFT(fftArray,fftSize))
+	{
+		float logFreq;
+		float freqSum = 0;
+		int numFreqSummed = 0;
+		int currentBand = 0;
+		float bandwidth = MAX_BAND / ((float)bands - 1.0);
+		float halfBandwidth = bandwidth / 2.0;
+
+		//for(int i=ceil((MIN_SPECTRUM_FREQ*fftSize)/22050.0); i<fftSize; i++)
+		for(int i=0;i<fftSize;i++)
+		{
+			//logFreq = log( (i*(22050.0/fftSize)-MIN_SPECTRUM_FREQ) + 1.0) / log(2.0);
+			logFreq = log(i+1.0) / log(2.0);
+			//moved beyond the current band
+			while(logFreq > (currentBand * bandwidth + halfBandwidth))
+			{
+				//calculate band average
+				if(numFreqSummed == 0)
+					bandArray[currentBand] = 0;
+				else
+					bandArray[currentBand] = freqSum/numFreqSummed;
+
+				//inc band and reset sums
+				currentBand++;
+				freqSum = numFreqSummed = 0.0;
+			}
+
+			freqSum += fftArray[i];
+			numFreqSummed++;
+		}
+	}
+	return false;
+}
+
+/*
+ * Update FMOD
+ */
 void AudioManager::update()
 {
   system->update();
