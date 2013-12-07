@@ -4,7 +4,7 @@ varying vec3 normal, lightDir, eyeVec;
 
 void main()
 {	
-	/*vec4 final_color = 
+	vec4 final_color = 
 	(gl_FrontLightModelProduct.sceneColor * gl_FrontMaterial.ambient) + 
 	(gl_LightSource[0].ambient * gl_FrontMaterial.ambient);
 
@@ -21,13 +21,10 @@ void main()
 
 		vec3 E = normalize(eyeVec);
 		vec3 R = reflect(-L,N);
-		float specular = pow( max(dot(R,E), 0.0),
+		/*float specular = pow( max(dot(R,E), 1.0),
 				      gl_FrontMaterial.shininess );
-		final_color += gl_LightSource[0].specular * 
-			       gl_FrontMaterial.specular * 
-			       specular;
+		final_color += gl_LightSource[0].specular * gl_FrontMaterial.specular * specular;*/
 	}	
 
-	gl_FragColor = final_color;*/
-	gl_FragColor = vec4(0.0,1.0,0.0,1.0);		
+	gl_FragColor = final_color;		
 }
