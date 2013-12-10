@@ -5,6 +5,7 @@
 #include "fmod.hpp"
 #include "fmod_errors.h"
 #include <vector>
+#include <ctime>
 
 using namespace std;
 
@@ -33,6 +34,8 @@ private:
     float            distFactor;
 
 	vector<vector<float>> beatDetectBuf;
+	vector<float> soundEnergyArray;
+	time_t beatTime;
 
 	//sounds
 	FMOD::Sound* currentStream;

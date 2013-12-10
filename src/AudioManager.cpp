@@ -14,6 +14,7 @@ float AudioManager::BOTTOM_SPECTRUM_FREQ = 60;
 AudioManager::AudioManager()
 {
 	initFMOD();
+	time(&beatTime);
 	currentStream = NULL;
 }
 
@@ -275,7 +276,7 @@ bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, flo
 					bandArray[currentBand] = (log(linBand*0.95+0.05)/log(20.0) + 1); //log scale amplitudes
 				}
 
-				//update beat detection buffers
+				/*//update beat detection buffers
 				if(beatDetectBuf.size() <= currentBand)
 				{
 					vector<float> newBand;
@@ -293,7 +294,7 @@ bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, flo
 						beatDetectBuf[currentBand].erase(beatDetectBuf[currentBand].begin());
 						beatDetectBuf[currentBand].push_back(linBand);
 					}
-				}
+				}*/
 
 				//inc band and reset sums
 				currentBand++;
@@ -303,6 +304,24 @@ bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, flo
 			freqSum += pow(fftArray[i],4);
 			numFreqSummed++;
 		}
+
+		//prep for beat detection
+		float avgWindowPower = 0;
+		for(int i=0; i < bands; i++)
+		{
+			avgWindowPower += linBandArray[i];
+		}
+		avgWindowPower = avgWindowPower / bands;
+		if(soundEnergyArray.size() < 43)
+		{
+			soundEnergyArray.push_back(avgWindowPower);
+		}
+		else
+		{
+			soundEnergyArray.erase(soundEnergyArray.begin());
+			soundEnergyArray.push_back(avgWindowPower);
+		}
+
 		return true;
 	}
 	return false;
@@ -349,11 +368,28 @@ bool AudioManager::clampBands(float* fftBands, int bandArraySize, float* clamped
  */
 int AudioManager::detectBeats(float* bandArray)
 {
+	time_t currentTime;
+	time(&currentTime);
+
+	float sum = 0.0;
+	float average;
+
+	float V;
+	for(int i=0; i < soundEnergyArray.size(); i++)
+	{
+
+	}
+	if((currentTime - beatTime) > 0.000000001)
+	{
+		beatTime = currentTime;	
+		return 1;
+	}
+
+
+	/*
 	for(int i=0; i<beatDetectBuf.size(); i++)
 	{
 		//average for detecting difference from average
-		float sum = 0.0;
-		float average;
 
 		for(int j=0; j<beatDetectBuf[i].size(); j++)
 			sum += beatDetectBuf[i][j];
@@ -362,7 +398,6 @@ int AudioManager::detectBeats(float* bandArray)
 		float checkVal = bandArray[i];
 		if(checkVal - average > 0.1)
 			return i;
-	}
-
+	}*/
 	return -1;
 }

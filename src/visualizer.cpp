@@ -297,7 +297,7 @@ void Visualizer::init(int* argcp, char** argv)
 	audioManager = new AudioManager();
 	//fftBuf = new float[FFT_SIZE];
 
-	audioManager->loadSound("timescar.mp3");
+	audioManager->loadSound("Strobe.mp3");
 	audioManager->play();
 }
 
