@@ -36,9 +36,9 @@ void Visualizer::updateScene()
 
 	//do update stuff here
 	blurSize = 0.0;
+
 	bool fftSucceeded = false;
-	 fftSucceeded = audioManager->getFFT(fftBuf,FFT_SIZE);
-  //fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
+	fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
 	if(fftSucceeded)
 	{
 		if (fftBuf[7] > .17)
@@ -59,18 +59,19 @@ void Visualizer::updateScene()
 			glEnd();
 		}
 		//test logfft stuff
-		fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
-		for(int i=START_BAND;i<BANDS_IN_USE+START_BAND;i++)
+		bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands,
+													   BANDS_IN_USE, START_BAND);
+		//for(int i=START_BAND;i<BANDS_IN_USE+START_BAND;i++)
+		for(int i=0;i<BANDS_IN_USE;i++)
 		{
 			glLineWidth(4.5);
 			glColor3f(1, 1, 1);
 			glBegin(GL_LINES);
-				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0+( (log(fftBands[i]*0.95+0.05)/log(20.0) + 1) * 20.0),0.0);
+				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0 + patchBands[i]*20,0.0);
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
 			glEnd();
 		}
-    //fftSucceeded = audioManager->getLogFFT(fftBuf, FFT_SIZE, fftBands, FFT_NUM_BANDS);
-    surface->addBand(fftBands);
+		surface->addBand(fftBands);
 	}
 	else
 	{

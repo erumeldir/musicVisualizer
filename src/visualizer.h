@@ -59,6 +59,7 @@ private:
 
 	float fftBuf[FFT_SIZE];
 	float fftBands[FFT_NUM_BANDS];
+	float patchBands[BANDS_IN_USE];
 
 public:
 	static Visualizer* getInstance(int*,char**);
