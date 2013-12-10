@@ -4,6 +4,9 @@
 #include <stdio.h>
 #include "fmod.hpp"
 #include "fmod_errors.h"
+#include <vector>
+
+using namespace std;
 
 //error check macro for FMOD init
 #define FMOD_ERRCHECK(val_check) \
@@ -29,6 +32,8 @@ private:
     bool             fmodErrThrown; //used to check success without fatal exits/crashes
     float            distFactor;
 
+	vector<vector<float>> beatDetectBuf;
+
 	//sounds
 	FMOD::Sound* currentStream;
 	FMOD::Channel* mainChannel;
@@ -43,9 +48,10 @@ public:
 	bool play();
 	bool stop();
 
-	bool getFFT(float*,int);					//get a linear fft
-	bool getLogFFT(float*,int,float*,int);		//get a logarithmic fft
+	bool getFFT(float*,int);							//get a linear fft
+	bool getLogFFT(float*,int,float*,float*,int);		//get a logarithmic fft
 	static bool clampBands(float*,int,float*,int,int);	//clamp the bands to a smaller subset range
+	int detectBeats(float*);
 
   void update();
 };

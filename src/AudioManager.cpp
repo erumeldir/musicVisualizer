@@ -237,7 +237,7 @@ bool AudioManager::getFFT(float* fftArray, int size)
  * fall in a current log band. (Higher frequency ranges might not need as many averages 
  * since everything is very compressed visually). TODO: Optimize & Detect missing bands
  */
-bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, int bands)
+bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, float* linBandArray, int bands)
 {
 	//reset the bands
 	for(int i=0; i<bands; i++)
@@ -262,14 +262,37 @@ bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, int
 			while(logFreq > (currentBand * bandwidth + halfBandwidth))
 			{
 				//calculate band average
+				float linBand;
 				if(numFreqSummed == 0)
 				{
+					linBandArray[currentBand] = 0;
 					bandArray[currentBand] = 0;
 				}
 				else
 				{
-					float linBand = pow((freqSum/(double)numFreqSummed),(1.0/4.0));  //RMS averaging
+					linBand = pow((freqSum/(double)numFreqSummed),(1.0/4.0));  //RMS averaging
+					linBandArray[currentBand] = linBand;
 					bandArray[currentBand] = (log(linBand*0.95+0.05)/log(20.0) + 1); //log scale amplitudes
+				}
+
+				//update beat detection buffers
+				if(beatDetectBuf.size() <= currentBand)
+				{
+					vector<float> newBand;
+					newBand.push_back(linBand);
+					beatDetectBuf.push_back(newBand);
+				}
+				else
+				{
+					if(beatDetectBuf[currentBand].size() < 43)
+					{
+						beatDetectBuf[currentBand].push_back(linBand);
+					}
+					else
+					{
+						beatDetectBuf[currentBand].erase(beatDetectBuf[currentBand].begin());
+						beatDetectBuf[currentBand].push_back(linBand);
+					}
 				}
 
 				//inc band and reset sums
@@ -316,4 +339,30 @@ bool AudioManager::clampBands(float* fftBands, int bandArraySize, float* clamped
 	}
 
 	return true;
+}
+
+/*
+ * beat detection using the audio manager's buffers
+ * Input:
+ * float* bandArray - the current linear band array
+ * returns -1 if no beat and the number of the band when beat detected
+ */
+int AudioManager::detectBeats(float* bandArray)
+{
+	for(int i=0; i<beatDetectBuf.size(); i++)
+	{
+		//average for detecting difference from average
+		float sum = 0.0;
+		float average;
+
+		for(int j=0; j<beatDetectBuf[i].size(); j++)
+			sum += beatDetectBuf[i][j];
+		average = sum / (float)beatDetectBuf[i].size();
+
+		float checkVal = bandArray[i];
+		if(checkVal - average > 0.1)
+			return i;
+	}
+
+	return -1;
 }

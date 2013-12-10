@@ -3,7 +3,7 @@
 
 #define FFT_SIZE      4096	//the fft window resolution (fine tune for speed/quality)
 #define FFT_NUM_BANDS 64	//number of bands to divide log spectrum into (higher = more clarity & more spread out spectrum)
-#define NUM_PATCHES	  39	//number of patches in the horizontal direction
+#define NUM_PATCHES	  36	//number of patches in the horizontal direction
 #define BANDS_IN_USE  NUM_PATCHES+1
 #define START_BAND    10	//the band number to start at (first band # = 0)
 
@@ -59,6 +59,7 @@ private:
 
 	float fftBuf[FFT_SIZE];
 	float fftBands[FFT_NUM_BANDS];
+	float linBands[FFT_NUM_BANDS];
 	float patchBands[BANDS_IN_USE];
 
 public:

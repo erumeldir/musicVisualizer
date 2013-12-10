@@ -38,13 +38,15 @@ void Visualizer::updateScene()
 	blurSize = 0.0;
 
 	bool fftSucceeded = false;
-	fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
+	fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,linBands,FFT_NUM_BANDS);
 	if(fftSucceeded)
 	{
+		/*
 		if (fftBuf[7] > .17)
 			blurSize = fftBuf[7]/1000.0 + fftBuf[7]/1300.0;
 		else
-			blurSize = fftBuf[7]/1000.0;
+			blurSize = fftBuf[7]/1000.0;*/
+
 		float barLoc;
 
 		//DRAW STUFF WITH NEW FFT DATA
@@ -59,8 +61,7 @@ void Visualizer::updateScene()
 			glEnd();
 		}
 		//test logfft stuff
-    bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
-		//for(int i=START_BAND;i<BANDS_IN_USE+START_BAND;i++)
+		bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		for(int i=0;i<BANDS_IN_USE;i++)
 		{
 			glLineWidth(4.5);
@@ -70,11 +71,19 @@ void Visualizer::updateScene()
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
 			glEnd();
 		}
+
+		//test beat detection
+		int bandDetected;
+		if(bandDetected = audioManager->detectBeats(linBands) != -1)
+		{
+			blurSize = 0.005;
+			cout << "BEAT" << endl;
+		}
 		surface->addBand(patchBands);
 	}
 	else
 	{
-		cout << "FFT ERROR!" << endl;
+		cout << "FFT ERROR!" << endl << endl;
 	}	
 }
 
