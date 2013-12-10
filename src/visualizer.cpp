@@ -59,8 +59,7 @@ void Visualizer::updateScene()
 			glEnd();
 		}
 		//test logfft stuff
-		bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands,
-													   BANDS_IN_USE, START_BAND);
+    bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		//for(int i=START_BAND;i<BANDS_IN_USE+START_BAND;i++)
 		for(int i=0;i<BANDS_IN_USE;i++)
 		{
@@ -71,7 +70,7 @@ void Visualizer::updateScene()
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
 			glEnd();
 		}
-		surface->addBand(fftBands);
+		surface->addBand(patchBands);
 	}
 	else
 	{
@@ -216,7 +215,7 @@ void Visualizer::init(int* argcp, char** argv)
   right->localTranslate(0, -8, -8);
   
   // test bezier surface
-  surface = new BezierSurface(FFT_NUM_BANDS, 15, 1,.8,40,1);
+  surface = new BezierSurface(BANDS_IN_USE,15, 1,.8,30,1);
 
   //testShad3->addChild(surface);
   right->addChild(surface);
@@ -485,10 +484,39 @@ void Visualizer::idleCallback()
  */
 void Visualizer::onKeyboard(unsigned char key, int x, int y)
 {
+  float randBand[FFT_NUM_BANDS] = { 0};
 	switch(key)
 	{
+  case 'a':
+    for (int i = 0; i < FFT_NUM_BANDS; i++)
+    {
+      randBand[i] = rand() % 5;
+    }
+    surface->addBand(randBand);
+    break;
   case 'r':
     Visualizer::getInstance()->world->localRotateY(.05);
+    break;
+  case 'R':
+    Visualizer::getInstance()->world->localRotateY(-.05);
+    break;
+  case 'x':
+    Visualizer::getInstance()->world->globalTranslate(1, 0, 0);
+    break;
+  case 'X':
+    Visualizer::getInstance()->world->globalTranslate(-1, 0, 0);
+    break;
+  case 'Y':
+    Visualizer::getInstance()->world->globalTranslate(0, -1, 0);
+    break;
+  case 'y':
+    Visualizer::getInstance()->world->globalTranslate(0, 1, 0);
+    break;
+  case 'Z':
+    Visualizer::getInstance()->world->globalTranslate(0, 0, -1);
+    break;
+  case 'z':
+    Visualizer::getInstance()->world->globalTranslate(0, 0, 1);
     break;
 	default:
 		break;

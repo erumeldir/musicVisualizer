@@ -46,6 +46,7 @@ public:
 	bool getFFT(float*,int);					//get a linear fft
 	bool getLogFFT(float*,int,float*,int);		//get a logarithmic fft
 	static bool clampBands(float*,int,float*,int,int);	//clamp the bands to a smaller subset range
+
   void update();
 };
 
