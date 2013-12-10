@@ -255,19 +255,22 @@ bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, int
 		float bandwidth = MAX_BAND / ((float)bands - 1.0);
 		float halfBandwidth = bandwidth / 2.0;
 
-		//for(int i=ceil((MIN_SPECTRUM_FREQ*fftSize)/22050.0); i<fftSize; i++)
 		for(int i=0;i<fftSize;i++)
 		{
-			//logFreq = log( (i*(22050.0/fftSize)-MIN_SPECTRUM_FREQ) + 1.0) / log(2.0);
 			logFreq = log(i+1.0) / log(2.0);
 			//moved beyond the current band
 			while(logFreq > (currentBand * bandwidth + halfBandwidth))
 			{
 				//calculate band average
 				if(numFreqSummed == 0)
+				{
 					bandArray[currentBand] = 0;
+				}
 				else
-					bandArray[currentBand] = pow((freqSum/(double)numFreqSummed),(1.0/4.0));
+				{
+					float linBand = pow((freqSum/(double)numFreqSummed),(1.0/4.0));  //RMS averaging
+					bandArray[currentBand] = (log(linBand*0.95+0.05)/log(20.0) + 1); //log scale amplitudes
+				}
 
 				//inc band and reset sums
 				currentBand++;
@@ -277,6 +280,7 @@ bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, int
 			freqSum += pow(fftArray[i],4);
 			numFreqSummed++;
 		}
+		return true;
 	}
 	return false;
 }
@@ -287,4 +291,29 @@ bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, int
 void AudioManager::update()
 {
   system->update();
+}
+
+/*
+ * Clamps a log fft array to a smaller subset range. 
+ * Input: 
+ * float* fftBands - array holding the full fft data
+ * int bandArraySize - length of fftBands array
+ * float* clampedBands - the new array to hold the clamped data
+ * int bandsInUse - the length of the clampedBands array
+ * int startingBand - which band to start at
+ */
+bool AudioManager::clampBands(float* fftBands, int bandArraySize, float* clampedBands, int bandsInUse, int startingBand)
+{
+	//catch potential array index OB error
+	if(bandsInUse + startingBand >= bandArraySize)
+		return false;
+
+	int n = 0;
+	for(int i=startingBand; i < (startingBand + bandsInUse); i++)
+	{
+		clampedBands[n] = fftBands[i];
+		n++;
+	}
+
+	return true;
 }
