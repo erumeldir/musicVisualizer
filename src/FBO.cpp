@@ -1,7 +1,7 @@
 #include <iostream>
 #include <stdlib.h>
-#include <GL/glut.h>
 #include "GLee.h"
+#include <GL/glut.h>
 #include "FBO.h"
 
 using namespace std;
