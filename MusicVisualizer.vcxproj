@@ -78,6 +78,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="shaders\gaussianBlur.fs" />
+    <None Include="shaders\gaussianBlur.vs" />
+    <None Include="shaders\gaussianBlurHorizontal.fs" />
+    <None Include="shaders\gaussianBlurVertical.fs" />
+    <None Include="shaders\mainShader.fs" />
+    <None Include="shaders\mainShader.vs" />
+    <None Include="shaders\passthrough.fs" />
+    <None Include="shaders\passthrough.vs" />
+    <None Include="shaders\postproc.f.glsl" />
+    <None Include="shaders\postproc.v.glsl" />
+    <None Include="shaders\simpleBlue.frag" />
+    <None Include="shaders\simpleBlue.vert" />
+    <None Include="shaders\simpleGreen.frag" />
+    <None Include="shaders\simpleGreen.vert" />
+    <None Include="shaders\simpleRed.frag" />
+    <None Include="shaders\simpleRed.vert" />
+    <None Include="shaders\toonShader.fs" />
+    <None Include="shaders\toonShader.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\AudioManager.cpp" />

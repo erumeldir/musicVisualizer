@@ -108,18 +108,72 @@
     <ClInclude Include="src\AudioManager.h">
       <Filter>Header</Filter>
     </ClInclude>
-    <ClInclude Include="src\BezierSurface.h">
-      <Filter>Source</Filter>
-    </ClInclude>
     <ClInclude Include="src\FBO.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\GlowGroup.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\BezierSurface.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="shaders\gaussianBlur.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\gaussianBlur.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\gaussianBlurHorizontal.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\gaussianBlurVertical.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\mainShader.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\mainShader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\passthrough.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\passthrough.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\postproc.f.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\postproc.v.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleBlue.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleBlue.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleGreen.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleGreen.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleRed.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleRed.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\toonShader.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\toonShader.vs">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="Header">
@@ -131,6 +185,9 @@
       <UniqueIdentifier>{95d0918f-daa1-42fa-9eaa-5d107669d8f1}</UniqueIdentifier>
       <Extensions>
       </Extensions>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{fb3cd9e3-e131-4697-900b-9c7e2620e930}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
