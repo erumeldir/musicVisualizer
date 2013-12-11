@@ -14,18 +14,18 @@ void main()
     vec4 avgValue = vec4(0.0, 0.0, 0.0, 0.0);
     float coefficientSum = 0.0;
 
-    avgValue += texture2D(tex, gl_TexCoord[0].xy) * incrementalGaussian.x * texture2D(mask,gl_TexCoord[0].xy);
+    avgValue += texture2D(tex, gl_TexCoord[0].xy) * incrementalGaussian.x * texture2D(mask,gl_TexCoord[0].xy).r;
     coefficientSum += incrementalGaussian.x;
     incrementalGaussian.xy *= incrementalGaussian.yz;
 
     for (float i = 1.0; i <= 4.0; i++) { 
         avgValue += texture2D(tex, gl_TexCoord[0].xy - i * blurSize * 
-                          vec2(1.0, 0.0)) * incrementalGaussian.x * texture2D(mask,gl_TexCoord[0].xy + i * blurSize * vec2(1.0, 0.0));         
+                          vec2(1.0, 0.0)) * incrementalGaussian.x * texture2D(mask,gl_TexCoord[0].xy + i * blurSize * vec2(1.0, 0.0)).r;         
         avgValue += texture2D(tex, gl_TexCoord[0].xy + i * blurSize * 
-                          vec2(1.0, 0.0)) * incrementalGaussian.x * texture2D(mask,gl_TexCoord[0].xy + i * blurSize * vec2(1.0, 0.0));         
+                          vec2(1.0, 0.0)) * incrementalGaussian.x * texture2D(mask,gl_TexCoord[0].xy + i * blurSize * vec2(1.0, 0.0)).r;         
         coefficientSum += 2.0 * incrementalGaussian.x;
         incrementalGaussian.xy *= incrementalGaussian.yz;
     }
 
-    gl_FragData[0] = avgValue / coefficientSum * vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragData[0] = avgValue / coefficientSum;
 }

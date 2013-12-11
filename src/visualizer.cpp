@@ -132,6 +132,9 @@ void Visualizer::init(int* argcp, char** argv)
 	shader_map["verticalGaussian"] = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurVertical.fs", true);
 	shader_map["horizontalGaussian"] = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurHorizontal.fs", true);
 
+	// Set up fx shader
+	shader_map["coolShader"] = new Shader("shaders/coolShader.vs", "shaders/coolShader.fs", true);
+
 	//install callbacks
 	glutDisplayFunc(displayCallback);
 	glutReshapeFunc(onReshape);
@@ -404,9 +407,25 @@ void Visualizer::displayCallback()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// FINAL RENDERING PASSES
-	glBlendFunc(GL_ONE, GL_ONE);
+	glBlendFunc(GL_SRC_ALPHA,GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
+
+	shader_map["coolShader"]->bind();
+	// Draw result on a quad
+	glLoadIdentity();
+	glBegin(GL_QUADS);
+		glTexCoord2f(0,0);
+		glVertex2f(-1,-1);
+		glTexCoord2f(0,1);
+		glVertex2f(-1,1);
+		glTexCoord2f(1,1);
+		glVertex2f(1,1);
+		glTexCoord2f(1,0);
+		glVertex2f(1,-1);
+	glEnd();
+	shader_map["coolShader"]->unbind();
+
 	shader_map["passthrough"]->bind();
 
 	// Set the result from first-pass gaussian blur as the texture for the second pass
@@ -427,6 +446,8 @@ void Visualizer::displayCallback()
 		glVertex2f(1,-1);
 	glEnd();
 	
+	glBlendFunc(GL_ONE,GL_ONE);
+
 		// Set the result from first-pass gaussian blur as the texture for the second pass
 	glActiveTexture(GL_TEXTURE0 + 0);
 	fbo_map["blur2"]->activateTexture();
@@ -446,7 +467,6 @@ void Visualizer::displayCallback()
 	glEnd();
 
 	shader_map["passthrough"]->unbind();
-
 
 	glDisable(GL_BLEND);
 	glEnable(GL_DEPTH_TEST);

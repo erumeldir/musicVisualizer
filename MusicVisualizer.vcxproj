@@ -78,6 +78,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="shaders\coolShader.fs" />
+    <None Include="shaders\coolShader.vs" />
     <None Include="shaders\gaussianBlur.fs" />
     <None Include="shaders\gaussianBlur.vs" />
     <None Include="shaders\gaussianBlurHorizontal.fs" />
