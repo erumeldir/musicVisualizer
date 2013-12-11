@@ -221,8 +221,8 @@ void Visualizer::init(int* argcp, char** argv)
   // test bezier surface
   surface = new BezierSurface(BANDS_IN_USE,15, 1,10,80,15);
 
-  testShad3->addChild(surface);
-  right->addChild(testShad3);
+ // testShad3->addChild(surface);
+  right->addChild(surface);
   world->addChild(right);
 
 
