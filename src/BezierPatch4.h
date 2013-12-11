@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include "GL\glut.h"
 #include "Geometry.h"
+#include "ColorGradient.h"
 
 #define NUM_CONTROL_POINTS 16
 
@@ -28,9 +29,10 @@ public:
   void setControlPoints(Vector3*);         // takes array to 16 Vector3s and changes the control points
   void setControlPoint(int, int, Vector3); // changes the value of a single control point
   Vector3 getControlPoint(int, int);       // gets the value of a single control point
-  void setColors(int, int, Vector4*);       // takes array to 16 Vector4s and changes the control points
+  void setColors(ColorGradient*, double);  // takes a color map and sets each points color based on it's amp
   void setColor(int, int, Vector4);        // changes the color of a single control point
   Vector4 getColor(int, int);              // gets the color of a single control point
+  void copyColor(BezierPatch4);            // copies color of the given patch
 
   // Sound amplitude functions
   void copyAmplitude(BezierPatch4); // copies the amplitude of the given patch

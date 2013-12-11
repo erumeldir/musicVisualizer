@@ -268,7 +268,7 @@ bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, int
 				}
 				else
 				{
-					float linBand = pow((freqSum/(double)numFreqSummed),(1.0/4.0));  //RMS averaging
+					float linBand = pow((freqSum/(double)numFreqSummed),(1.0/2.0));  //RMS averaging
 					bandArray[currentBand] = (log(linBand*0.95+0.05)/log(20.0) + 1); //log scale amplitudes
 				}
 
@@ -277,7 +277,7 @@ bool AudioManager::getLogFFT(float* fftArray, int fftSize, float* bandArray, int
 				freqSum = numFreqSummed = 0.0;
 			}
 
-			freqSum += pow(fftArray[i],4);
+			freqSum += pow(fftArray[i],2);
 			numFreqSummed++;
 		}
 		return true;

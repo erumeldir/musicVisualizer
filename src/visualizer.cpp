@@ -153,7 +153,7 @@ void Visualizer::init(int* argcp, char** argv)
   right->localTranslate(0, -8, -8);
   
   // test bezier surface
-  surface = new BezierSurface(BANDS_IN_USE,15, 1,10,80,15);
+  surface = new BezierSurface(BANDS_IN_USE,15, 1,10,80,15, &colorMap);
 
  // testShad3->addChild(surface);
   right->addChild(surface);
@@ -235,7 +235,7 @@ void Visualizer::init(int* argcp, char** argv)
   world->localTranslate(Vector3(0,-28,75));
 
   //test color gradients
-  colorMap.addColor(Vector3(   0.0,   0.0,     0.0));
+  //colorMap.addColor(Vector3(   0.0,   0.0,     0.0));
   colorMap.addColor(Vector3(0.1992,   0.0,  0.2578));
   colorMap.addColor(Vector3(0.5039, 0.0036, 0.2031));
   colorMap.addColor(Vector3(0.9726, 0.2773, 0.0351));
