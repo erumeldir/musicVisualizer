@@ -96,6 +96,26 @@ bool BezierSurface::addBand(float * amps)
   // join the last band
   surface[numPatches - 1][maxTime - 1].join(&(surface[numPatches - 1][maxTime - 2]), 0, amps[numPatches]);
 
+  // second pass for C1 continuity
+  for (int i = 0; i < numPatches - 1; i++)
+  {
+    // patch above the current one
+    BezierPatch4* topPatch = &(surface[i][maxTime - 2]);
+
+    // far left patch
+    if (i == 0)
+    {
+      surface[i][maxTime - 1].joinCont(topPatch, 0);
+    }
+    else
+    {
+      // patch left of the current
+      BezierPatch4* leftPatch = &(surface[i - 1][maxTime - 1]);
+      // join patches of the new band together
+      surface[i][maxTime - 1].joinCont(topPatch, leftPatch);
+    }
+  }
+
   return true;
 }
 
