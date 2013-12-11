@@ -14,8 +14,7 @@ Shader* testShader3;
 Shader* verticalGaussian;
 Shader* horizontalGaussian;
 
-FBO* blur1;
-FBO* blur2;
+map<char*, FBO*> fbo_map;
 
 GLuint uni_fbo_texture_verticalGaussian, uni_fbo_texture_horizontalGaussian;
 
@@ -116,10 +115,10 @@ void Visualizer::init(int* argcp, char** argv)
 
 
 	// Create Framebuffers for performing gaussian blur
-	blur1 = new FBO(width, height);
-	blur1->generate();
-	blur2 = new FBO(width, height);
-	blur2->generate();
+	fbo_map["blur1"] = new FBO(width, height);
+	fbo_map["blur1"]->generate();
+	fbo_map["blur2"] = new FBO(width, height);
+	fbo_map["blur2"]->generate();
 
 	// Set up resources for post processing
 	verticalGaussian = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurVertical.fs", true);
@@ -279,7 +278,7 @@ void Visualizer::displayCallback()
 	bool culling = Visualizer::getInstance()->cullingEnabled;
 
 	// Set render target to framebuffer
-	blur1->activate();
+	fbo_map["blur1"]->activate();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);
@@ -304,8 +303,8 @@ void Visualizer::displayCallback()
 	glMatrixMode(GL_MODELVIEW);
 
 	// Switch FBO
-	blur1->deactivate();
-	blur2->activate();
+	fbo_map["blur1"]->deactivate();
+	fbo_map["blur2"]->activate();
 	
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -314,7 +313,7 @@ void Visualizer::displayCallback()
 	horizontalGaussian->bind();
 
 	// Use result from first pass as input texture to shader
-	blur1->activateTexture();
+	fbo_map["blur1"]->activateTexture();
 	glUniform1i(uni_fbo_texture_horizontalGaussian, 0);
 
 	// Set how blurred the result should be
@@ -337,7 +336,7 @@ void Visualizer::displayCallback()
 	horizontalGaussian->unbind();
 
 	// Switch back to physical screen
-	blur2->deactivate();
+	fbo_map["blur2"]->deactivate();
 
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -346,7 +345,7 @@ void Visualizer::displayCallback()
 	verticalGaussian->bind();
 
 	// Set the result from first-pass gaussian blur as the texture for the second pass
-	blur2->activateTexture();
+	fbo_map["blur2"]->activateTexture();
 	glUniform1i(uni_fbo_texture_verticalGaussian, 0);
 
 	// Set how blurred the result should be
@@ -394,8 +393,8 @@ void Visualizer::onReshape(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 
 	// Resize the FBOs
-	blur1->updateSize(w, h);
-	blur2->updateSize(w, h);
+	fbo_map["blur1"]->updateSize(w, h);
+	fbo_map["blur2"]->updateSize(w, h);
 }
 
 /*

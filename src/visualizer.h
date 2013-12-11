@@ -7,6 +7,7 @@
 #define BANDS_IN_USE  NUM_PATCHES+1
 #define START_BAND    10	//the band number to start at (first band # = 0)
 
+#include <map>
 #include "Geometry.h"
 #include "Light.h"
 #include "Camera.h"

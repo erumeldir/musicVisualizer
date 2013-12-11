@@ -1,9 +1,14 @@
 #ifndef _FBO_H_
 #define _FBO_H_
 
+#include <iostream>
+#include <stdlib.h>
+#include "GLee.h"
+#include <GL/glut.h>
+
 class FBO
 {
-public:
+protected:
   GLuint fboId, fboTex, rboDepth;
 
   unsigned int width, height;
