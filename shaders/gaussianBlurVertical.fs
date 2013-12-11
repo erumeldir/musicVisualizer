@@ -1,33 +1,30 @@
-// Gaussian Blur
-// To use for a glow:
-// 1. Render glow sources
-// 2. Blur filter the resulting image
-// 2.5 Can separate horizontal and vertical blur filter into separate passes; just set blend function to GL_ONE, GL_ONE
-// 3. Save result to a temporary texture object
-// 4. Blend result of glow with non-glow image for final result
-
 uniform sampler2D tex;
 uniform float blurSize;
-
-// TODO allow setting size of Gaussian blur pixel neighborhood
-// TODO allow setting of amplitude and width of Gaussian function
-// TODO add attenuation factor for color
-// TODO separate into separate vertical/horizontal passes
+uniform float sigma;
+const float pi = 3.14159265;
 
 void main()
 {		
-	vec4 sum = vec4(0.0);
+    vec3 incrementalGaussian;
+    incrementalGaussian.x = 1.0 / (sqrt(2.0 * pi) * sigma);
+    incrementalGaussian.y = exp(-0.5 / (sigma * sigma));
+    incrementalGaussian.z = incrementalGaussian.y * incrementalGaussian.y;
 
-	// Vertical blur
-	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y - 4.0*blurSize))*0.05;
-	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y - 3.0*blurSize))*0.09;
-	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y - 2.0*blurSize))*0.12;
-	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y - blurSize))*0.15;
-	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y))*0.16;
-	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y + blurSize))*0.15;
-	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y + 2.0*blurSize))*0.12;
-	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y + 3.0*blurSize))*0.09;
-	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y + 4.0*blurSize))*0.05;
+    vec4 avgValue = vec4(0.0, 0.0, 0.0, 0.0);
+    float coefficientSum = 0.0;
 
-	gl_FragData[0] = sum;
+    avgValue += texture2D(tex, gl_TexCoord[0].xy) * incrementalGaussian.x;
+    coefficientSum += incrementalGaussian.x;
+    incrementalGaussian.xy *= incrementalGaussian.yz;
+
+    for (float i = 1.0; i <= 4.0; i++) { 
+        avgValue += texture2D(tex, gl_TexCoord[0].xy - i * blurSize * 
+                          vec2(0.0, 1.0)) * incrementalGaussian.x;         
+        avgValue += texture2D(tex, gl_TexCoord[0].xy + i * blurSize * 
+                          vec2(0.0, 1.0)) * incrementalGaussian.x;         
+        coefficientSum += 2.0 * incrementalGaussian.x;
+        incrementalGaussian.xy *= incrementalGaussian.yz;
+    }
+
+    gl_FragData[0] = avgValue / coefficientSum * vec4(1.0, 0.0, 0.0, 1.0);
 }

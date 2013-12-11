@@ -25,8 +25,9 @@ void main()
 		float specular = pow( max(dot(R,E), 1.0),
 				      gl_FrontMaterial.shininess );
 		final_color += gl_LightSource[0].specular * gl_FrontMaterial.specular * specular;
-	}	
-
-	gl_FragData[0] = final_color;
+	}
+    gl_FragData[0] = final_color;
+    if (glow > 0.0)
+        glow = 1.0;
     gl_FragData[1] = vec4(glow, 0.0, 0.0, 1.0);
 }

@@ -345,7 +345,8 @@ void Visualizer::displayCallback()
 	shader_map["horizontalGaussian"]->uniform1i("mask", 1);
 	blurSize = .0051;
 	// Set how blurred the result should be
-	shader_map["horizontalGaussian"]->uniform1f("blurSize", blurSize);
+	shader_map["horizontalGaussian"]->uniform1f("blurSize", 1.0/1024.0);
+	shader_map["horizontalGaussian"]->uniform1f("sigma", 3.0);
 
 	// Draw result on a quad
 	glLoadIdentity();
@@ -378,9 +379,8 @@ void Visualizer::displayCallback()
 	shader_map["verticalGaussian"]->uniform1i("tex", 0);
 
 	// Set how blurred the result should be
-	shader_map["horizontalGaussian"]->uniform1f("blurSize", blurSize);
-	//test = glGetUniformLocation(shader_map["verticalGaussian"]->getPid(), "blurSize");
-	//glUniform1f(test, blurSize);
+	shader_map["verticalGaussian"]->uniform1f("blurSize", 1.0/1024.0);
+	shader_map["verticalGaussian"]->uniform1f("sigma", 3.0);
 
 	// Draw result on a quad
 	glLoadIdentity();
