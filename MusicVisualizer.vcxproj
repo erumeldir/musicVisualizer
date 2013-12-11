@@ -88,6 +88,7 @@
     <ClCompile Include="src\Frustum.cpp" />
     <ClCompile Include="src\Geometry.cpp" />
     <ClCompile Include="src\GLee.c" />
+    <ClCompile Include="src\GlowGroup.cpp" />
     <ClCompile Include="src\Light.cpp" />
     <ClCompile Include="src\Material.cpp" />
     <ClCompile Include="src\Matrix4.cpp" />
@@ -108,6 +109,7 @@
     <ClInclude Include="src\Frustum.h" />
     <ClInclude Include="src\Geometry.h" />
     <ClInclude Include="src\GLee.h" />
+    <ClInclude Include="src\GlowGroup.h" />
     <ClInclude Include="src\Light.h" />
     <ClInclude Include="src\Material.h" />
     <ClInclude Include="src\Matrix4.h" />

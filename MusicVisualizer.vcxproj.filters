@@ -55,6 +55,9 @@
     <ClCompile Include="src\FBO.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\GlowGroup.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BezierPatch4.h">
@@ -109,6 +112,9 @@
       <Filter>Source</Filter>
     </ClInclude>
     <ClInclude Include="src\FBO.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GlowGroup.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>

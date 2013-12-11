@@ -13,10 +13,10 @@
 #include "Camera.h"
 #include "Matrix4.h"
 #include "ShaderGroup.h"
+#include "GlowGroup.h"
 #include "BezierSurface.h"
 #include "AudioManager.h"
 #include "FBO.h"
-#include "Material.h"
 
 
 /*

@@ -1,3 +1,6 @@
+
+uniform float glow;
+
 varying vec3 normal, lightDir, eyeVec;
 
 void main()
@@ -24,5 +27,6 @@ void main()
 		final_color += gl_LightSource[0].specular * gl_FrontMaterial.specular * specular;
 	}	
 
-	gl_FragColor = final_color;		
+	gl_FragData[0] = final_color;
+    gl_FragData[1] = vec4(glow, 0.0, 0.0, 1.0);
 }

@@ -1,4 +1,5 @@
 // Vertex shader that does nothing but what OpenGL normally does
+//uniform float glow;
 
 varying vec3 normal, lightDir, eyeVec;
 
