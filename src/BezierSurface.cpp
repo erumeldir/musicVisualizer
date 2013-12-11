@@ -100,7 +100,7 @@ bool BezierSurface::addBand(float * amps)
   surface[numPatches - 1][maxTime - 1].join(&(surface[numPatches - 1][maxTime - 2]), 0, amps[numPatches]);
 
   // second pass for C1 continuity
-  for (int i = 0; i < numPatches - 1; i++)
+  for (int i = 0; i < numPatches; i++)
   {
     // patch above the current one
     BezierPatch4* topPatch = &(surface[i][maxTime - 2]);

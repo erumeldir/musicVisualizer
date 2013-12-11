@@ -4,6 +4,7 @@
 #include <iostream>
 #include "visualizer.h"
 #include <math.h>
+#include <algorithm>
 
 #define ENABLE_INIT_TESTING false
 
@@ -58,7 +59,7 @@ void Visualizer::updateScene()
 				glVertex3f((barLoc-5)*2,-5.0+(fftBuf[i]*40.0),0.0);
 				glVertex3f((barLoc-5)*2, -5.0, 0.0);
 			glEnd();
-		}
+		}*/
 		//test logfft stuff
 		bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		//for(int i=START_BAND;i<BANDS_IN_USE+START_BAND;i++)
@@ -68,11 +69,19 @@ void Visualizer::updateScene()
 			Vector4 color = colorMap.getColor(fftBands[i]);
 			glColor4f(color[0],color[1],color[2],color[3]);
 			glBegin(GL_LINES);
-				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0 + patchBands[i]*20,0.0);
-				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
+				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,60.0 + patchBands[i]*20,0.0);
+				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 60.0, 0.0);
 			glEnd();
-		}*/
-    bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
+		}
+    memcpy(&patchBands[BANDS_IN_USE],&patchBands[0],sizeof(float) * 8);
+
+    for (int i = 0; i < 4; i++)
+    {
+      float temp = patchBands[BANDS_IN_USE + i];
+      patchBands[BANDS_IN_USE + i] = patchBands[BANDS_IN_USE + 7 - i];
+      patchBands[BANDS_IN_USE + 8 - i] = temp;
+    }
+  //  bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		surface->addBand(patchBands);
 	}
 	else
@@ -153,7 +162,7 @@ void Visualizer::init(int* argcp, char** argv)
   right->localTranslate(0, -8, -8);
   
   // test bezier surface
-  surface = new BezierSurface(BANDS_IN_USE,15, 1,10,80,15, &colorMap);
+  surface = new BezierSurface(BANDS_IN_USE+8,15, 1,17,150,25, &colorMap);
 
  // testShad3->addChild(surface);
   right->addChild(surface);
@@ -227,12 +236,12 @@ void Visualizer::init(int* argcp, char** argv)
 	audioManager = new AudioManager();
 	//fftBuf = new float[FFT_SIZE];
 
-	audioManager->loadSound("Strobe.mp3");
+	audioManager->loadSound("timescar.mp3");
 	audioManager->play();
 
   // Set world to look at the surface
   world->localRotateY(M_PI);
-  world->localTranslate(Vector3(0,-28,75));
+  world->localTranslate(Vector3(0,-71,208));
 
   //test color gradients
   //colorMap.addColor(Vector3(   0.0,   0.0,     0.0));
