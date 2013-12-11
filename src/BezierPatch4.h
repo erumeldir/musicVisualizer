@@ -33,6 +33,7 @@ public:
   void setAmplitude(double);  // sets the amplitude of the patch (the y value representing the sound)
   double getAmplitude(); // gets the amplitude of a patch
   void join(BezierPatch4* top, BezierPatch4* right, double edgeAmp = 0); // connects the current patch to the adjacent ones
+  void joinCont(BezierPatch4* top, BezierPatch4* left); // connects the current patch to the adjacent one with C1 continuity
 
 
   void draw(Matrix4 C, Frustum F, bool checkCulling); // draws the bezier curve

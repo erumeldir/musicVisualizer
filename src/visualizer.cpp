@@ -1,6 +1,9 @@
+#define _USE_MATH_DEFINES
+
 #include <stdlib.h>
 #include <iostream>
 #include "visualizer.h"
+#include <math.h>
 
 #define ENABLE_INIT_TESTING false
 
@@ -41,7 +44,7 @@ void Visualizer::updateScene()
 	fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
 	if(fftSucceeded)
 	{
-		if (fftBuf[7] > .17)
+		/*if (fftBuf[7] > .17)
 			blurSize = fftBuf[7]/1000.0 + fftBuf[7]/1300.0;
 		else
 			blurSize = fftBuf[7]/1000.0;
@@ -69,7 +72,8 @@ void Visualizer::updateScene()
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0 + patchBands[i]*20,0.0);
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
 			glEnd();
-		}
+		}*/
+    bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		surface->addBand(patchBands);
 	}
 	else
@@ -215,11 +219,12 @@ void Visualizer::init(int* argcp, char** argv)
   right->localTranslate(0, -8, -8);
   
   // test bezier surface
-  surface = new BezierSurface(BANDS_IN_USE,15, 1,.8,30,1);
+  surface = new BezierSurface(BANDS_IN_USE,15, 1,10,80,15);
 
-  //testShad3->addChild(surface);
-  right->addChild(surface);
+  testShad3->addChild(surface);
+  right->addChild(testShad3);
   world->addChild(right);
+
 
 	//testing code
 	if(ENABLE_INIT_TESTING)
@@ -288,8 +293,13 @@ void Visualizer::init(int* argcp, char** argv)
 	audioManager = new AudioManager();
 	//fftBuf = new float[FFT_SIZE];
 
-	audioManager->loadSound("timescar.mp3");
+	audioManager->loadSound("Strobe.mp3");
 	audioManager->play();
+
+  // Set world to look at the surface
+  world->localRotateY(M_PI);
+  world->localTranslate(Vector3(0,-28,75));
+
 }
 
 /*
