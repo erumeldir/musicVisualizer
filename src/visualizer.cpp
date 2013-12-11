@@ -11,8 +11,7 @@ Shader* testShader;
 Shader* testShader2;
 Shader* testShader3;
 
-Shader* verticalGaussian;
-Shader* horizontalGaussian;
+map<char*, Shader*> shader_map;
 
 map<char*, FBO*> fbo_map;
 
@@ -121,10 +120,10 @@ void Visualizer::init(int* argcp, char** argv)
 	fbo_map["blur2"]->generate();
 
 	// Set up resources for post processing
-	verticalGaussian = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurVertical.fs", true);
-	horizontalGaussian = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurHorizontal.fs", true);
-	uni_fbo_texture_verticalGaussian = glGetUniformLocation(verticalGaussian->getPid(), "tex");
-	uni_fbo_texture_horizontalGaussian = glGetUniformLocation(horizontalGaussian->getPid(), "tex");
+	shader_map["verticalGaussian"] = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurVertical.fs", true);
+	shader_map["horizontalGaussian"] = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurHorizontal.fs", true);
+	uni_fbo_texture_verticalGaussian = glGetUniformLocation(shader_map["verticalGaussian"]->getPid(), "tex");
+	uni_fbo_texture_horizontalGaussian = glGetUniformLocation(shader_map["horizontalGaussian"]->getPid(), "tex");
 
 	//install callbacks
 	glutDisplayFunc(displayCallback);
@@ -279,7 +278,7 @@ void Visualizer::displayCallback()
 
 	// Set render target to framebuffer
 	fbo_map["blur1"]->activate();
-
+	
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);
 
@@ -310,14 +309,14 @@ void Visualizer::displayCallback()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// POST-PROCESSING: Horizontal Gaussian Blur
-	horizontalGaussian->bind();
+	shader_map["horizontalGaussian"]->bind();
 
 	// Use result from first pass as input texture to shader
 	fbo_map["blur1"]->activateTexture();
 	glUniform1i(uni_fbo_texture_horizontalGaussian, 0);
 
 	// Set how blurred the result should be
-	GLuint test = glGetUniformLocation(horizontalGaussian->getPid(), "blurSize");
+	GLuint test = glGetUniformLocation(shader_map["horizontalGaussian"]->getPid(), "blurSize");
 	glUniform1f(test, blurSize);
 
 	// Draw result on a quad
@@ -333,7 +332,7 @@ void Visualizer::displayCallback()
 		glVertex2f(1,-1);
 	glEnd();
 
-	horizontalGaussian->unbind();
+	shader_map["horizontalGaussian"]->unbind();
 
 	// Switch back to physical screen
 	fbo_map["blur2"]->deactivate();
@@ -342,14 +341,14 @@ void Visualizer::displayCallback()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// POST-PROCESSING: Vertical Gaussian Blur
-	verticalGaussian->bind();
+	shader_map["verticalGaussian"]->bind();
 
 	// Set the result from first-pass gaussian blur as the texture for the second pass
 	fbo_map["blur2"]->activateTexture();
 	glUniform1i(uni_fbo_texture_verticalGaussian, 0);
 
 	// Set how blurred the result should be
-	test = glGetUniformLocation(verticalGaussian->getPid(), "blurSize");
+	test = glGetUniformLocation(shader_map["verticalGaussian"]->getPid(), "blurSize");
 	glUniform1f(test, blurSize);
 
 	// Draw result on a quad
@@ -365,7 +364,7 @@ void Visualizer::displayCallback()
 		glVertex2f(1,-1);
 	glEnd();
 
-	verticalGaussian->unbind();
+	shader_map["verticalGaussian"]->unbind();
 
 	// Restore original projection matrix
 	glMatrixMode(GL_PROJECTION);
