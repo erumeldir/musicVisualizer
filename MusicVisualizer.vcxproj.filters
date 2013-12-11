@@ -52,6 +52,12 @@
     <ClCompile Include="src\BezierSurface.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\FBO.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ColorGradient.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BezierPatch4.h">
@@ -102,8 +108,14 @@
     <ClInclude Include="src\AudioManager.h">
       <Filter>Header</Filter>
     </ClInclude>
+    <ClInclude Include="src\FBO.h">
+      <Filter>Header</Filter>
+    </ClInclude>
     <ClInclude Include="src\BezierSurface.h">
-      <Filter>Source</Filter>
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorGradient.h">
+      <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

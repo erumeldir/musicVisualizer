@@ -17,17 +17,15 @@ Shader* testShader3;
 Shader* verticalGaussian;
 Shader* horizontalGaussian;
 
-GLuint fbo, fbo_texture, rbo_depth;
-GLuint fbo_blur, fbo_texture_blur, rbo_depth_blur;
-GLuint vbo_fbo_vertices;
-GLuint attrib_v_coord_verticalGaussian, attrib_v_coord_horizontalGaussian;
+map<char*, FBO*> fbo_map;
+
 GLuint uni_fbo_texture_verticalGaussian, uni_fbo_texture_horizontalGaussian;
 
 Vector3* controlPoints;
 BezierPatch4 * patch1;
 BezierSurface * surface;
 
-float blurSize = 0.000;
+float blurSize = 0.0;
 bool blurDirUp = true;
 
 
@@ -62,12 +60,13 @@ void Visualizer::updateScene()
 			glEnd();
 		}
 		//test logfft stuff
-    bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
+		bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		//for(int i=START_BAND;i<BANDS_IN_USE+START_BAND;i++)
 		for(int i=0;i<BANDS_IN_USE;i++)
 		{
 			glLineWidth(4.5);
-			glColor3f(1, 1, 1);
+			Vector4 color = colorMap.getColor(fftBands[i]);
+			glColor4f(color[0],color[1],color[2],color[3]);
 			glBegin(GL_LINES);
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0 + patchBands[i]*20,0.0);
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
@@ -119,82 +118,17 @@ void Visualizer::init(int* argcp, char** argv)
 	glEnable(GL_LIGHTING);
 	glEnable(GL_NORMALIZE);
 
-	// Set up framebuffer
-	// Create texture
-	glActiveTexture(GL_TEXTURE0);
-	glGenTextures(1, &fbo_texture);
-	glBindTexture(GL_TEXTURE_2D, fbo_texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	// Create depth buffer
-	glGenRenderbuffers(1, &rbo_depth);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
-	glBindRenderbuffer(GL_TEXTURE_2D, 0);
-	// Link texture and depth buffer together to create framebuffer
-	glGenFramebuffers(1, &fbo);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_texture, 0);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth);
-	// Check if framebuffer creation succeeded
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	{
-		fprintf(stderr, "Framebuffer creation failed!\n");
-		exit(-1);
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-	// Set up framebuffer
-	// Create texture
-	glActiveTexture(GL_TEXTURE1);
-	glGenTextures(1, &fbo_texture_blur);
-	glBindTexture(GL_TEXTURE_2D, fbo_texture_blur);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	// Create depth buffer
-	glGenRenderbuffers(1, &rbo_depth_blur);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth_blur);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, width, height);
-	glBindRenderbuffer(GL_TEXTURE_2D, 0);
-	// Link texture and depth buffer together to create framebuffer
-	glGenFramebuffers(1, &fbo_blur);
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo_blur);
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fbo_texture_blur, 0);
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo_depth_blur);
-	// Check if framebuffer creation succeeded
-	if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-	{
-		fprintf(stderr, "Framebuffer creation failed!\n");
-		exit(-1);
-	}
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
-	// Create quad for drawing
-	GLfloat fbo_vertices[] = {
-		-1, -1,
-		1, -1,
-		-1, 1,
-		1, 1,
-	};
-	glGenBuffers(1, &vbo_fbo_vertices);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(fbo_vertices), fbo_vertices, GL_STATIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// Create Framebuffers for performing gaussian blur
+	fbo_map["blur1"] = new FBO(width, height);
+	fbo_map["blur1"]->generate();
+	fbo_map["blur2"] = new FBO(width, height);
+	fbo_map["blur2"]->generate();
 
 	// Set up resources for post processing
 	verticalGaussian = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurVertical.fs", true);
 	horizontalGaussian = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurHorizontal.fs", true);
-	attrib_v_coord_verticalGaussian = glGetAttribLocation(verticalGaussian->getPid(), "v_coord");
 	uni_fbo_texture_verticalGaussian = glGetUniformLocation(verticalGaussian->getPid(), "tex");
-	attrib_v_coord_horizontalGaussian = glGetAttribLocation(horizontalGaussian->getPid(), "v_coord");
 	uni_fbo_texture_horizontalGaussian = glGetUniformLocation(horizontalGaussian->getPid(), "tex");
 
 	//install callbacks
@@ -300,6 +234,14 @@ void Visualizer::init(int* argcp, char** argv)
   world->localRotateY(M_PI);
   world->localTranslate(Vector3(0,-28,75));
 
+  //test color gradients
+  colorMap.addColor(Vector3(   0.0,   0.0,     0.0));
+  colorMap.addColor(Vector3(0.1992,   0.0,  0.2578));
+  colorMap.addColor(Vector3(0.5039, 0.0036, 0.2031));
+  colorMap.addColor(Vector3(0.9726, 0.2773, 0.0351));
+  colorMap.addColor(Vector3(0.9922, 0.6719, 0.1367));
+  colorMap.addColor(Vector3(0.9648, 0.8984,    0.0));
+
 }
 
 /*
@@ -355,7 +297,7 @@ void Visualizer::displayCallback()
 	bool culling = Visualizer::getInstance()->cullingEnabled;
 
 	// Set render target to framebuffer
-	glBindFramebuffer(GL_FRAMEBUFFER, fbo);
+	fbo_map["blur1"]->activate();
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);
@@ -363,89 +305,93 @@ void Visualizer::displayCallback()
 	//draw stuff here
 	Matrix4 IDENTITY;
 	IDENTITY.identity();
- // Vector3 randomVec(rand() % 5, rand() % 5, rand() % 5);
- // patch1->setControlPoint(0, 0, randomVec);
 	scene->draw(cam.getViewMatrix(),frustum,culling);
 
-  Visualizer::getInstance()->updateScene();
+	Visualizer::getInstance()->updateScene();
 
-
-
+	// Allow OpenGL time to finish what it is doing
 	glFlush();
 
+	// Use Texture Unit 0 for post processing effects
 	glActiveTexture(GL_TEXTURE0);
-	glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fbo_blur);
-	glBindFramebuffer(GL_READ_FRAMEBUFFER, fbo);
+
+	// Switch projection matrix to identity
+	glMatrixMode(GL_PROJECTION);
+	glPushMatrix();
+	glLoadIdentity();
+	glMatrixMode(GL_MODELVIEW);
+
+	// Switch FBO
+	fbo_map["blur1"]->deactivate();
+	fbo_map["blur2"]->activate();
+	
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-
-	// Horizontal blur
+	// POST-PROCESSING: Horizontal Gaussian Blur
 	horizontalGaussian->bind();
-	glBindTexture(GL_TEXTURE_2D, fbo_texture);
+
+	// Use result from first pass as input texture to shader
+	fbo_map["blur1"]->activateTexture();
 	glUniform1i(uni_fbo_texture_horizontalGaussian, 0);
+
+	// Set how blurred the result should be
 	GLuint test = glGetUniformLocation(horizontalGaussian->getPid(), "blurSize");
 	glUniform1f(test, blurSize);
-	glEnableVertexAttribArray(attrib_v_coord_horizontalGaussian);
-	//glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
-	glVertexAttribPointer(
-		attrib_v_coord_horizontalGaussian,
-		2,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		0
-	);
 
-	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	// Draw result on a quad
 	glLoadIdentity();
 	glBegin(GL_QUADS);
+		glTexCoord2f(0,0);
 		glVertex2f(-1,-1);
+		glTexCoord2f(0,1);
 		glVertex2f(-1,1);
+		glTexCoord2f(1,1);
 		glVertex2f(1,1);
+		glTexCoord2f(1,0);
 		glVertex2f(1,-1);
 	glEnd();
 
-	glDisableVertexAttribArray(attrib_v_coord_horizontalGaussian);
 	horizontalGaussian->unbind();
 
 	// Switch back to physical screen
-	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+	fbo_map["blur2"]->deactivate();
 
-	glActiveTexture(GL_TEXTURE1);
-
-	// Draw texture to screen
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+	// POST-PROCESSING: Vertical Gaussian Blur
 	verticalGaussian->bind();
-	glBindTexture(GL_TEXTURE_2D, fbo_texture_blur);
-	glUniform1i(uni_fbo_texture_verticalGaussian, 1);
+
+	// Set the result from first-pass gaussian blur as the texture for the second pass
+	fbo_map["blur2"]->activateTexture();
+	glUniform1i(uni_fbo_texture_verticalGaussian, 0);
+
+	// Set how blurred the result should be
 	test = glGetUniformLocation(verticalGaussian->getPid(), "blurSize");
 	glUniform1f(test, blurSize);
-	glEnableVertexAttribArray(attrib_v_coord_verticalGaussian);
-	//glBindBuffer(GL_ARRAY_BUFFER, vbo_fbo_vertices);
-	glVertexAttribPointer(
-		attrib_v_coord_verticalGaussian,
-		2,
-		GL_FLOAT,
-		GL_FALSE,
-		0,
-		0
-	);
 
-	//glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
+	// Draw result on a quad
 	glLoadIdentity();
 	glBegin(GL_QUADS);
+		glTexCoord2f(0,0);
 		glVertex2f(-1,-1);
+		glTexCoord2f(0,1);
 		glVertex2f(-1,1);
+		glTexCoord2f(1,1);
 		glVertex2f(1,1);
+		glTexCoord2f(1,0);
 		glVertex2f(1,-1);
 	glEnd();
 
-	glDisableVertexAttribArray(attrib_v_coord_verticalGaussian);
 	verticalGaussian->unbind();
 
+	// Restore original projection matrix
+	glMatrixMode(GL_PROJECTION);
+	glPopMatrix();
+	glMatrixMode(GL_MODELVIEW);
+
+	// Show result on screen
 	glutSwapBuffers();
 }
 
@@ -465,20 +411,9 @@ void Visualizer::onReshape(int w, int h)
     glTranslatef(0, 0, -20);		//may need to adjust this
     glMatrixMode(GL_MODELVIEW);
 
-	// Resize the framebuffer and depth buffer
-	glBindTexture(GL_TEXTURE_2D, fbo_texture);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
-
-	glBindTexture(GL_TEXTURE_2D, fbo_texture_blur);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, w, h, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
-	glBindTexture(GL_TEXTURE_2D, 0);
-	glBindRenderbuffer(GL_RENDERBUFFER, rbo_depth_blur);
-	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT16, w, h);
-	glBindRenderbuffer(GL_RENDERBUFFER, 0);
+	// Resize the FBOs
+	fbo_map["blur1"]->updateSize(w, h);
+	fbo_map["blur2"]->updateSize(w, h);
 }
 
 /*
@@ -540,8 +475,10 @@ int main(int argc, char* argv[])
   musicVis = Visualizer::getInstance(&argc,argv);
   musicVis->run();
 
+  /*
   glDeleteRenderbuffers(1, &rbo_depth);
   glDeleteTextures(1, &fbo_texture);
   glDeleteFramebuffers(1, &fbo);
   glDeleteBuffers(1, &vbo_fbo_vertices);
+  */
 }

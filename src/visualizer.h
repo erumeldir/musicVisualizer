@@ -7,6 +7,7 @@
 #define BANDS_IN_USE  NUM_PATCHES+1
 #define START_BAND    10	//the band number to start at (first band # = 0)
 
+#include <map>
 #include "Geometry.h"
 #include "Light.h"
 #include "Camera.h"
@@ -14,6 +15,8 @@
 #include "ShaderGroup.h"
 #include "BezierSurface.h"
 #include "AudioManager.h"
+#include "ColorGradient.h"
+#include "FBO.h"
 
 
 /*
@@ -49,6 +52,7 @@ private:
 
 	//geometry
     Sphere* testSphere;
+	ColorGradient colorMap;
 
 	//scene graph groups
 	MatrixTransform* world;

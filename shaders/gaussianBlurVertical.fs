@@ -8,7 +8,6 @@
 
 uniform sampler2D tex;
 uniform float blurSize;
-varying vec2 f_texcoord;
 
 // TODO allow setting size of Gaussian blur pixel neighborhood
 // TODO allow setting of amplitude and width of Gaussian function
@@ -20,16 +19,15 @@ void main()
 	vec4 sum = vec4(0.0);
 
 	// Vertical blur
-	sum += texture2D(tex, vec2(f_texcoord.x, f_texcoord.y - 4.0*blurSize))*0.05;
-	sum += texture2D(tex, vec2(f_texcoord.x, f_texcoord.y - 3.0*blurSize))*0.09;
-	sum += texture2D(tex, vec2(f_texcoord.x, f_texcoord.y - 2.0*blurSize))*0.12;
-	sum += texture2D(tex, vec2(f_texcoord.x, f_texcoord.y - blurSize))*0.15;
-	sum += texture2D(tex, vec2(f_texcoord.x, f_texcoord.y))*0.16;
-	sum += texture2D(tex, vec2(f_texcoord.x, f_texcoord.y + blurSize))*0.15;
-	sum += texture2D(tex, vec2(f_texcoord.x, f_texcoord.y + 2.0*blurSize))*0.12;
-	sum += texture2D(tex, vec2(f_texcoord.x, f_texcoord.y + 3.0*blurSize))*0.09;
-	sum += texture2D(tex, vec2(f_texcoord.x, f_texcoord.y + 4.0*blurSize))*0.05;
+	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y - 4.0*blurSize))*0.05;
+	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y - 3.0*blurSize))*0.09;
+	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y - 2.0*blurSize))*0.12;
+	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y - blurSize))*0.15;
+	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y))*0.16;
+	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y + blurSize))*0.15;
+	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y + 2.0*blurSize))*0.12;
+	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y + 3.0*blurSize))*0.09;
+	sum += texture2D(tex, vec2(gl_TexCoord[0].x, gl_TexCoord[0].y + 4.0*blurSize))*0.05;
 
-	gl_FragColor = sum;
-
+	gl_FragData[0] = sum;
 }

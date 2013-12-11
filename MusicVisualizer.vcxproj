@@ -84,6 +84,8 @@
     <ClCompile Include="src\BezierPatch4.cpp" />
     <ClCompile Include="src\BezierSurface.cpp" />
     <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\ColorGradient.cpp" />
+    <ClCompile Include="src\FBO.cpp" />
     <ClCompile Include="src\Frustum.cpp" />
     <ClCompile Include="src\Geometry.cpp" />
     <ClCompile Include="src\GLee.c" />
@@ -103,6 +105,8 @@
     <ClInclude Include="src\BezierPatch4.h" />
     <ClInclude Include="src\BezierSurface.h" />
     <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\ColorGradient.h" />
+    <ClInclude Include="src\FBO.h" />
     <ClInclude Include="src\Frustum.h" />
     <ClInclude Include="src\Geometry.h" />
     <ClInclude Include="src\GLee.h" />
