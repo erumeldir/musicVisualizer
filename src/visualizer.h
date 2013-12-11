@@ -16,6 +16,7 @@
 #include "BezierSurface.h"
 #include "AudioManager.h"
 #include "FBO.h"
+#include "Material.h"
 
 
 /*

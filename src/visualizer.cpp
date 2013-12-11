@@ -19,6 +19,8 @@ Vector3* controlPoints;
 BezierPatch4 * patch1;
 BezierSurface * surface;
 
+Material* materialProperties;
+
 float blurSize = 0.0;
 bool blurDirUp = true;
 
@@ -113,9 +115,12 @@ void Visualizer::init(int* argcp, char** argv)
 
 	// Create Framebuffers for performing gaussian blur
 	fbo_map["blur1"] = new FBO(width, height);
-	fbo_map["blur1"]->generate();
+	fbo_map["blur1"]->generateColorAndMask();
 	fbo_map["blur2"] = new FBO(width, height);
-	fbo_map["blur2"]->generate();
+	fbo_map["blur2"]->generateColorAndMask();
+
+	// Create main geometry and material shader
+	shader_map["mainShader"] = new Shader("shaders/mainShader.vs", "shaders/mainShader.fs", true);
 
 	// Set up resources for post processing
 	shader_map["verticalGaussian"] = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurVertical.fs", true);
@@ -204,6 +209,8 @@ void Visualizer::init(int* argcp, char** argv)
 		// third layer
 		down2->addChild(testShad3);
 		testShad3->addChild(patch1);
+
+		materialProperties = new Material(Vector4(1.0, 0.0, 0.0, 1.0));
 	}
 
   //light the scene
@@ -275,6 +282,7 @@ void Visualizer::displayCallback()
 	// Set render target to framebuffer
 	fbo_map["blur1"]->activate();
 	
+	shader_map["mainShader"]->bind();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);
 
@@ -287,6 +295,8 @@ void Visualizer::displayCallback()
 
 	// Allow OpenGL time to finish what it is doing
 	glFlush();
+
+	shader_map["mainShader"]->unbind();
 
 	// Use Texture Unit 0 for post processing effects
 	glActiveTexture(GL_TEXTURE0);
