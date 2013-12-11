@@ -9,12 +9,15 @@
 class FBO
 {
 protected:
-  GLuint fboId, fboTex, rboDepth;
+  GLuint fboId, fboTex, fboMask, rbo_depth_stencil;
 
   unsigned int width, height;
 
+  bool isValidFBO;
+
   bool isActivated;
-  bool depthBuf;
+  bool depthStencilBuf;
+  bool maskBuf;
 
 public:
   FBO(unsigned int w, unsigned int h);
@@ -26,6 +29,12 @@ public:
   void activateTexture();
   void deactivateTexture();
 
+  void activateMask();
+  void deactivateMask();
+
+  void generateColorOnly();
+  void generateColorAndMask();
+  void generateColorAndDepth();
   void generate();
   void destroy();
 

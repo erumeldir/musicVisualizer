@@ -14,12 +14,9 @@ Shader* testShader;
 Shader* testShader2;
 Shader* testShader3;
 
-Shader* verticalGaussian;
-Shader* horizontalGaussian;
+map<char*, Shader*> shader_map;
 
 map<char*, FBO*> fbo_map;
-
-GLuint uni_fbo_texture_verticalGaussian, uni_fbo_texture_horizontalGaussian;
 
 Vector3* controlPoints;
 BezierPatch4 * patch1;
@@ -117,6 +114,9 @@ void Visualizer::init(int* argcp, char** argv)
 	glEnable(GL_LIGHTING);
 	glEnable(GL_NORMALIZE);
 
+	// Create main framebuffer
+	fbo_map["main"] = new FBO(width, height);
+	fbo_map["main"]->generate();
 
 	// Create Framebuffers for performing gaussian blur
 	fbo_map["blur1"] = new FBO(width, height);
@@ -124,11 +124,13 @@ void Visualizer::init(int* argcp, char** argv)
 	fbo_map["blur2"] = new FBO(width, height);
 	fbo_map["blur2"]->generate();
 
+	// Create main geometry and material shader
+	shader_map["mainShader"] = new Shader("shaders/mainShader.vs", "shaders/mainShader.fs", true);
+	shader_map["passthrough"] = new Shader("shaders/passthrough.vs", "shaders/passthrough.fs", true);
+
 	// Set up resources for post processing
-	verticalGaussian = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurVertical.fs", true);
-	horizontalGaussian = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurHorizontal.fs", true);
-	uni_fbo_texture_verticalGaussian = glGetUniformLocation(verticalGaussian->getPid(), "tex");
-	uni_fbo_texture_horizontalGaussian = glGetUniformLocation(horizontalGaussian->getPid(), "tex");
+	shader_map["verticalGaussian"] = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurVertical.fs", true);
+	shader_map["horizontalGaussian"] = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurHorizontal.fs", true);
 
 	//install callbacks
 	glutDisplayFunc(displayCallback);
@@ -144,7 +146,7 @@ void Visualizer::init(int* argcp, char** argv)
 	world->reset();	//reset to identity
 
   // TESTING: ShaderGroup object turns things blue to test shadergroup
-  testShader3 = new Shader("shaders/simpleGreen.vert", "shaders/simpleGreen.frag", true);
+  testShader3 = new Shader("shaders/mainShader.vs", "shaders/mainShader.fs", true);
   ShaderGroup* testShad3 = new ShaderGroup(testShader3);
 
   // Highest layer: Transform up right and apply blue shader
@@ -154,8 +156,16 @@ void Visualizer::init(int* argcp, char** argv)
   // test bezier surface
   surface = new BezierSurface(BANDS_IN_USE,15, 1,10,80,15);
 
-  testShad3->addChild(surface);
-  right->addChild(testShad3);
+  // Test glowing
+  GlowGroup* testGlow = new GlowGroup(shader_map["mainShader"],true);
+  testGlow->addChild(new Sphere(10.0, 20, 10));
+  right->addChild(testGlow);
+
+
+  //testShad3->addChild(surface);
+  //right->addChild(testShad3);
+  right->addChild(surface);
+  //testGlow->addChild(surface);
   world->addChild(right);
 
 
@@ -163,7 +173,7 @@ void Visualizer::init(int* argcp, char** argv)
 	if(ENABLE_INIT_TESTING)
 	{
 		//TESTING, replace with scene stuff
-		testSphere = new Sphere(6,20,20);
+		testSphere = new Sphere(3,20,20);
 		world->addChild(testSphere);
 
 		// TESTING: ShaderGroup object turns things blue to test shadergroup
@@ -182,7 +192,7 @@ void Visualizer::init(int* argcp, char** argv)
 		// Second layer: Transform below the highest layer and apply red shader
 		MatrixTransform* down = new MatrixTransform();
 		down->localTranslate(0, -9, 0);
-		Sphere* testSphere3 = new Sphere(3, 10, 10);
+		Sphere* testSphere3 = new Sphere(10, 10, 10);
 
 		// Third layer: Transform below second layer and apply green shader
 		MatrixTransform* down2 = new MatrixTransform();
@@ -288,8 +298,12 @@ void Visualizer::displayCallback()
 	bool culling = Visualizer::getInstance()->cullingEnabled;
 
 	// Set render target to framebuffer
-	fbo_map["blur1"]->activate();
+	fbo_map["main"]->activate();
+	
+	shader_map["mainShader"]->bind();
+	shader_map["mainShader"]->uniform1f("glow", 0.0);
 
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);
 
@@ -303,8 +317,7 @@ void Visualizer::displayCallback()
 	// Allow OpenGL time to finish what it is doing
 	glFlush();
 
-	// Use Texture Unit 0 for post processing effects
-	glActiveTexture(GL_TEXTURE0);
+	shader_map["mainShader"]->unbind();
 
 	// Switch projection matrix to identity
 	glMatrixMode(GL_PROJECTION);
@@ -313,22 +326,26 @@ void Visualizer::displayCallback()
 	glMatrixMode(GL_MODELVIEW);
 
 	// Switch FBO
-	fbo_map["blur1"]->deactivate();
-	fbo_map["blur2"]->activate();
+	fbo_map["main"]->deactivate();
+	fbo_map["blur1"]->activate();
 	
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	// POST-PROCESSING: Horizontal Gaussian Blur
-	horizontalGaussian->bind();
+	shader_map["horizontalGaussian"]->bind();
 
 	// Use result from first pass as input texture to shader
-	fbo_map["blur1"]->activateTexture();
-	glUniform1i(uni_fbo_texture_horizontalGaussian, 0);
+	glActiveTexture(GL_TEXTURE0 + 0);
+	fbo_map["main"]->activateTexture();
+	shader_map["horizontalGaussian"]->uniform1i("tex", 0);
 
+	glActiveTexture(GL_TEXTURE0 + 1);
+	fbo_map["main"]->activateMask();
+	shader_map["horizontalGaussian"]->uniform1i("mask", 1);
+	blurSize = .0051;
 	// Set how blurred the result should be
-	GLuint test = glGetUniformLocation(horizontalGaussian->getPid(), "blurSize");
-	glUniform1f(test, blurSize);
+	shader_map["horizontalGaussian"]->uniform1f("blurSize", blurSize);
 
 	// Draw result on a quad
 	glLoadIdentity();
@@ -343,24 +360,77 @@ void Visualizer::displayCallback()
 		glVertex2f(1,-1);
 	glEnd();
 
-	horizontalGaussian->unbind();
+	shader_map["horizontalGaussian"]->unbind();
+
+	// Switch FBO to second pass Gaussian blur FBO
+	fbo_map["blur1"]->deactivate();
+	fbo_map["blur2"]->activate();
+
+	glClearColor(0.0, 0.0, 0.0, 0.0);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	// POST-PROCESSING: Vertical Gaussian Blur
+	shader_map["verticalGaussian"]->bind();
+
+	// Set the result from first-pass gaussian blur as the texture for the second pass
+	glActiveTexture(GL_TEXTURE0 + 0);
+	fbo_map["blur1"]->activateTexture();
+	shader_map["verticalGaussian"]->uniform1i("tex", 0);
+
+	// Set how blurred the result should be
+	shader_map["horizontalGaussian"]->uniform1f("blurSize", blurSize);
+	//test = glGetUniformLocation(shader_map["verticalGaussian"]->getPid(), "blurSize");
+	//glUniform1f(test, blurSize);
+
+	// Draw result on a quad
+	glLoadIdentity();
+	glBegin(GL_QUADS);
+		glTexCoord2f(0,0);
+		glVertex2f(-1,-1);
+		glTexCoord2f(0,1);
+		glVertex2f(-1,1);
+		glTexCoord2f(1,1);
+		glVertex2f(1,1);
+		glTexCoord2f(1,0);
+		glVertex2f(1,-1);
+	glEnd();
+
+	shader_map["verticalGaussian"]->unbind();
 
 	// Switch back to physical screen
 	fbo_map["blur2"]->deactivate();
 
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	// POST-PROCESSING: Vertical Gaussian Blur
-	verticalGaussian->bind();
+	// FINAL RENDERING PASSES
+	glBlendFunc(GL_ONE, GL_ONE);
+	glEnable(GL_BLEND);
+	glDisable(GL_DEPTH_TEST);
+	shader_map["passthrough"]->bind();
 
 	// Set the result from first-pass gaussian blur as the texture for the second pass
-	fbo_map["blur2"]->activateTexture();
-	glUniform1i(uni_fbo_texture_verticalGaussian, 0);
+	glActiveTexture(GL_TEXTURE0 + 0);
+	fbo_map["main"]->activateTexture();
+	shader_map["passthrough"]->uniform1i("tex", 0);
 
-	// Set how blurred the result should be
-	test = glGetUniformLocation(verticalGaussian->getPid(), "blurSize");
-	glUniform1f(test, blurSize);
+	// Draw result on a quad
+	glLoadIdentity();
+	glBegin(GL_QUADS);
+		glTexCoord2f(0,0);
+		glVertex2f(-1,-1);
+		glTexCoord2f(0,1);
+		glVertex2f(-1,1);
+		glTexCoord2f(1,1);
+		glVertex2f(1,1);
+		glTexCoord2f(1,0);
+		glVertex2f(1,-1);
+	glEnd();
+	
+		// Set the result from first-pass gaussian blur as the texture for the second pass
+	glActiveTexture(GL_TEXTURE0 + 0);
+	fbo_map["blur2"]->activateTexture();
+	shader_map["passthrough"]->uniform1i("tex", 0);
 
 	// Draw result on a quad
 	glLoadIdentity();
@@ -375,7 +445,11 @@ void Visualizer::displayCallback()
 		glVertex2f(1,-1);
 	glEnd();
 
-	verticalGaussian->unbind();
+	shader_map["passthrough"]->unbind();
+
+
+	glDisable(GL_BLEND);
+	glEnable(GL_DEPTH_TEST);
 
 	// Restore original projection matrix
 	glMatrixMode(GL_PROJECTION);
@@ -403,6 +477,7 @@ void Visualizer::onReshape(int w, int h)
     glMatrixMode(GL_MODELVIEW);
 
 	// Resize the FBOs
+	fbo_map["main"]->updateSize(w, h);
 	fbo_map["blur1"]->updateSize(w, h);
 	fbo_map["blur2"]->updateSize(w, h);
 }

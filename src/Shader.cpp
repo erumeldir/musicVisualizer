@@ -63,10 +63,16 @@ Shader::unbind()
 
 void Shader::uniform1f(const GLchar *name, float val)
 {
-	GLuint p;
-	int i = glGetUniformLocation(p,name);
+	int i = glGetUniformLocation(pid,name);
 	glUniform1f(i, val);
 }
+
+void Shader::uniform1i(const GLchar *name, int val)
+{
+	int i = glGetUniformLocation(pid,name);
+	glUniform1i(i, val);
+}
+
 
 void
 Shader::printLog(const char* tag)
