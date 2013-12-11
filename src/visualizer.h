@@ -14,6 +14,7 @@
 #include "ShaderGroup.h"
 #include "BezierSurface.h"
 #include "AudioManager.h"
+#include "FBO.h"
 
 
 /*

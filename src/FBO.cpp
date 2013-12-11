@@ -36,8 +36,8 @@ void FBO::generate()
 	glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT, width, height);
 
 	// Link texture and depth buffer together to create framebuffer
-	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
 	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, fboTex, 0);
+	glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
 
 	// Set draw buffers
 	GLenum DrawBuffers[1] = {GL_COLOR_ATTACHMENT0};
@@ -49,6 +49,7 @@ void FBO::generate()
 		fprintf(stderr, "Framebuffer creation failed!\n");
 		exit(-1);
 	}
+
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
@@ -63,6 +64,16 @@ void FBO::deactivate()
 {
 	isActivated = false;
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+}
+
+void FBO::activateTexture()
+{
+	glBindTexture(GL_TEXTURE_2D,fboTex);
+}
+
+void FBO::deactivateTexture()
+{
+	glBindTexture(GL_TEXTURE_2D,0);
 }
 
 void FBO::destroy()

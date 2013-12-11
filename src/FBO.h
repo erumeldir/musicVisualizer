@@ -3,7 +3,7 @@
 
 class FBO
 {
-protected:
+public:
   GLuint fboId, fboTex, rboDepth;
 
   unsigned int width, height;
@@ -17,6 +17,9 @@ public:
 
   void activate();
   void deactivate();
+
+  void activateTexture();
+  void deactivateTexture();
 
   void generate();
   void destroy();
