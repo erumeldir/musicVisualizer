@@ -186,18 +186,6 @@ void BezierPatch4::join(BezierPatch4* top, BezierPatch4* right, double edgeAmp)
     Vector3 topPoint = top->getControlPoint(i, 3);
     // connect current patch to bottom of top
     setControlPoint(i, 0, topPoint);
-
-
-   /* if (i < 1){
-      // C1 version
-      // left of the right patch
-      topPoint = top->getControlPoint(i, 2);
-      // right of left patch
-      Vector3 currPoint = getControlPoint(i, 1);
-      // set both points y coord to the midpoint
-      // right->setControlPoint(1, i, Vector3(rightPoint.get(0), currPoint.get(1), rightPoint.get(2)));
-      setControlPoint(i, 1, Vector3(currPoint.get(0), topPoint.get(1), currPoint.get(2)));
-    }*/
   }
 
   // join right edge
@@ -219,8 +207,8 @@ void BezierPatch4::join(BezierPatch4* top, BezierPatch4* right, double edgeAmp)
       rightPoint = right->getControlPoint(1, i);
       // right of left patch
       currPoint = getControlPoint(2, i);
-     // float midpoint = (rightPoint.get(1) + currPoint.get(1))/2
-     // right->setControlPoint(1, i, Vector3(rightPoint.get(0), currPoint.get(1), rightPoint.get(2)));
+      // float midpoint = (rightPoint.get(1) + currPoint.get(1))/2
+      // right->setControlPoint(1, i, Vector3(rightPoint.get(0), currPoint.get(1), rightPoint.get(2)));
       setControlPoint(2, i, Vector3(currPoint.get(0), rightPoint.get(1), currPoint.get(2)));
     }
   }
@@ -235,3 +223,16 @@ void BezierPatch4::join(BezierPatch4* top, BezierPatch4* right, double edgeAmp)
   }
 }
 
+// connects the current patch to the adjacent one with C1 continuity
+void BezierPatch4::joinCont(BezierPatch4* top, BezierPatch4* left)
+{
+  // join top edge
+  for (int i = 0; i < 4; i++)
+  {
+    // bottom of the top patch
+    Vector3 topPoint = top->getControlPoint(i, 2);
+    // right of left patch
+    Vector3 currPoint = getControlPoint(i,1);
+    setControlPoint(i,1, Vector3(currPoint.get(0), topPoint.get(1), currPoint.get(2)));
+  }
+}

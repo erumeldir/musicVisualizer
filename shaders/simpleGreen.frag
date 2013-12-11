@@ -21,9 +21,9 @@ void main()
 
 		vec3 E = normalize(eyeVec);
 		vec3 R = reflect(-L,N);
-		/*float specular = pow( max(dot(R,E), 1.0),
+		float specular = pow( max(dot(R,E), 1.0),
 				      gl_FrontMaterial.shininess );
-		final_color += gl_LightSource[0].specular * gl_FrontMaterial.specular * specular;*/
+		final_color += gl_LightSource[0].specular * gl_FrontMaterial.specular * specular;
 	}	
 
 	gl_FragColor = final_color;		
