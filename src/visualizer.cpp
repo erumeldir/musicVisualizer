@@ -60,12 +60,13 @@ void Visualizer::updateScene()
 			glEnd();
 		}
 		//test logfft stuff
-    bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
+		bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		//for(int i=START_BAND;i<BANDS_IN_USE+START_BAND;i++)
 		for(int i=0;i<BANDS_IN_USE;i++)
 		{
 			glLineWidth(4.5);
-			glColor3f(1, 1, 1);
+			Vector4 color = colorMap.getColor(fftBands[i]);
+			glColor4f(color[0],color[1],color[2],color[3]);
 			glBegin(GL_LINES);
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0 + patchBands[i]*20,0.0);
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
@@ -232,6 +233,14 @@ void Visualizer::init(int* argcp, char** argv)
   // Set world to look at the surface
   world->localRotateY(M_PI);
   world->localTranslate(Vector3(0,-28,75));
+
+  //test color gradients
+  colorMap.addColor(Vector3(   0.0,   0.0,     0.0));
+  colorMap.addColor(Vector3(0.1992,   0.0,  0.2578));
+  colorMap.addColor(Vector3(0.5039, 0.0036, 0.2031));
+  colorMap.addColor(Vector3(0.9726, 0.2773, 0.0351));
+  colorMap.addColor(Vector3(0.9922, 0.6719, 0.1367));
+  colorMap.addColor(Vector3(0.9648, 0.8984,    0.0));
 
 }
 

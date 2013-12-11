@@ -15,6 +15,7 @@
 #include "ShaderGroup.h"
 #include "BezierSurface.h"
 #include "AudioManager.h"
+#include "ColorGradient.h"
 #include "FBO.h"
 
 
@@ -51,6 +52,7 @@ private:
 
 	//geometry
     Sphere* testSphere;
+	ColorGradient colorMap;
 
 	//scene graph groups
 	MatrixTransform* world;
