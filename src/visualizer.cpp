@@ -15,8 +15,6 @@ map<char*, Shader*> shader_map;
 
 map<char*, FBO*> fbo_map;
 
-GLuint uni_fbo_texture_verticalGaussian, uni_fbo_texture_horizontalGaussian;
-
 Vector3* controlPoints;
 BezierPatch4 * patch1;
 BezierSurface * surface;
@@ -122,8 +120,6 @@ void Visualizer::init(int* argcp, char** argv)
 	// Set up resources for post processing
 	shader_map["verticalGaussian"] = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurVertical.fs", true);
 	shader_map["horizontalGaussian"] = new Shader("shaders/gaussianBlur.vs", "shaders/gaussianBlurHorizontal.fs", true);
-	uni_fbo_texture_verticalGaussian = glGetUniformLocation(shader_map["verticalGaussian"]->getPid(), "tex");
-	uni_fbo_texture_horizontalGaussian = glGetUniformLocation(shader_map["horizontalGaussian"]->getPid(), "tex");
 
 	//install callbacks
 	glutDisplayFunc(displayCallback);
@@ -313,11 +309,10 @@ void Visualizer::displayCallback()
 
 	// Use result from first pass as input texture to shader
 	fbo_map["blur1"]->activateTexture();
-	glUniform1i(uni_fbo_texture_horizontalGaussian, 0);
+	shader_map["horizontalGaussian"]->uniform1i("tex", 0);
 
 	// Set how blurred the result should be
-	GLuint test = glGetUniformLocation(shader_map["horizontalGaussian"]->getPid(), "blurSize");
-	glUniform1f(test, blurSize);
+	shader_map["horizontalGaussian"]->uniform1f("blurSize", blurSize);
 
 	// Draw result on a quad
 	glLoadIdentity();
@@ -345,11 +340,12 @@ void Visualizer::displayCallback()
 
 	// Set the result from first-pass gaussian blur as the texture for the second pass
 	fbo_map["blur2"]->activateTexture();
-	glUniform1i(uni_fbo_texture_verticalGaussian, 0);
+	shader_map["verticalGaussian"]->uniform1i("tex", 0);
 
 	// Set how blurred the result should be
-	test = glGetUniformLocation(shader_map["verticalGaussian"]->getPid(), "blurSize");
-	glUniform1f(test, blurSize);
+	shader_map["horizontalGaussian"]->uniform1f("blurSize", blurSize);
+	//test = glGetUniformLocation(shader_map["verticalGaussian"]->getPid(), "blurSize");
+	//glUniform1f(test, blurSize);
 
 	// Draw result on a quad
 	glLoadIdentity();

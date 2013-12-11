@@ -38,6 +38,7 @@ public:
 
 	/* Set glUniform values */
 	void uniform1f(const GLchar *name, float val);
+	void uniform1i(const GLchar *name, int val);
 
   // previous and current binder
   GLhandleARB previousShader;
