@@ -26,5 +26,5 @@ void main()
         incrementalGaussian.xy *= incrementalGaussian.yz;
     }
 
-    gl_FragData[0] = avgValue / coefficientSum * vec4(1.0, 0.0, 0.0, 1.0);
+    gl_FragData[0] = avgValue / coefficientSum;
 }

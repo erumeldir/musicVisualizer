@@ -57,6 +57,7 @@ void main( void ) {
    c=c+makePoint(x,y,0.3,0.6,0.5,0.4,time);
      
    float u=dot(vec2(b,c),mouse+freqs)*100.;
+
   
    vec3 d=vec3(a,b,c)/10.0*vec3(u,u*.5,u*.1);
    
