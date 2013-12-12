@@ -6,9 +6,10 @@
 // Blobs
 
 
-float time = 6.0;
-vec2 mouse = vec2(10.0, 20.0);
-vec2 resolution = vec2(512.0, 512.0);
+uniform float time;
+uniform vec2 freqs;
+vec2 mouse = vec2(10.0, 10.0);
+uniform vec2 resolution;
 const float di = 0.707107;
 
 float makePoint(float x,float y,float fx,float fy,float sx,float sy,float t){
@@ -55,7 +56,8 @@ void main( void ) {
    c=c+makePoint(x,y,1.2,1.7,0.6,0.3,time);
    c=c+makePoint(x,y,0.3,0.6,0.5,0.4,time);
      
-   float u=dot(vec2(b,c),mouse)*100.;
+   float u=dot(vec2(b,c),mouse+freqs)*100.;
+
   
    vec3 d=vec3(a,b,c)/10.0*vec3(u,u*.5,u*.1);
    

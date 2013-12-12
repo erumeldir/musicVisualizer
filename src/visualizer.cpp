@@ -432,6 +432,8 @@ void Visualizer::displayCallback()
 	glDisable(GL_DEPTH_TEST);
 
 	shader_map["coolShader"]->bind();
+	shader_map["coolShader"]->uniform1f("time", GetTickCount()/1000.0);
+	shader_map["coolShader"]->uniform2f("resolution",Visualizer::getInstance()->height,Visualizer::getInstance()->width);
 	// Draw result on a quad
 	glLoadIdentity();
 	glBegin(GL_QUADS);

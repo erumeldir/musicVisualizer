@@ -73,6 +73,11 @@ void Shader::uniform1i(const GLchar *name, int val)
 	glUniform1i(i, val);
 }
 
+void Shader::uniform2f(const GLchar *name, float val1, float val2)
+{
+	int i = glGetUniformLocation(pid,name);
+	glUniform2f(i, val1, val2);
+}
 
 void
 Shader::printLog(const char* tag)
