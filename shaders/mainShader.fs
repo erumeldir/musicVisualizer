@@ -38,7 +38,7 @@ void main()
 	{
 		final_color += gl_LightSource[0].diffuse * 
 			       materialDiffuse * 
-			       lambertTerm;
+			       lambertTerm * 2.0;
 
 		vec3 E = normalize(eyeVec);
 		vec3 R = reflect(-L,N);

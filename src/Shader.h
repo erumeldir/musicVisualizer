@@ -40,6 +40,7 @@ public:
 	void uniform1f(const GLchar *name, float val);
 	void uniform1i(const GLchar *name, int val);
 	void uniform2f(const GLchar *name, float val1, float val2);
+	void uniform3f(const GLchar *name, float val1, float val2, float val3);
 
   // previous and current binder
   GLhandleARB previousShader;

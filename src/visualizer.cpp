@@ -38,6 +38,8 @@ BezierSegment *curvePos1, *curvePos2;
 float last_camX = 0, last_camY = 0, last_time, total_time_move = 0.5, total_time_rotate = 0;
 bool moving = true;
 
+Vector4 bassColor;
+
 /*******************************SCENE UPDATE**********************************/
 void Visualizer::updateScene()
 {
@@ -123,6 +125,8 @@ void Visualizer::updateScene()
     }
   //  bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		surface->addBand(patchBands);
+		Vector4 bCol = colorMap.getColor(.005);
+		bassColor.set(bCol.get(0), bCol.get(1), bCol.get(2), bCol.get(3));;
 	}
 	else
 	{
@@ -149,12 +153,13 @@ void Visualizer::init(int* argcp, char** argv)
 	//TODO make fullscreen
 
 	//set up window
-	width = 512;
-	height = 512;
+	width = 1024;
+	height = 768;
 	glutInit(argcp,argv);										// init glut
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);   // open an OpenGL context with double buffering, RGB colors, and depth buffering
     glutInitWindowSize(width, height);							// set initial window size
     glutCreateWindow("Music Visualizer");    		            // open window and set window title
+	glutFullScreen();
 
 	//set up OpenGL
 	glEnable(GL_DEPTH_TEST);            	    // enable depth buffering
@@ -500,6 +505,7 @@ void Visualizer::displayCallback()
 	shader_map["coolShader"]->bind();
 	shader_map["coolShader"]->uniform1f("time", GetTickCount()/1000.0);
 	shader_map["coolShader"]->uniform2f("resolution",Visualizer::getInstance()->height,Visualizer::getInstance()->width);
+	shader_map["coolShader"]->uniform3f("baseColor", bassColor[0], bassColor[1], bassColor[2]);
 	// Draw result on a quad
 	glLoadIdentity();
 	glBegin(GL_QUADS);
@@ -639,6 +645,10 @@ void Visualizer::onKeyboard(unsigned char key, int x, int y)
     break;
   case 'g':
 	  egg->toggleGlow();
+	  break;
+  case 27:
+      exit(0);
+      break;
 	default:
 		break;
 	}
