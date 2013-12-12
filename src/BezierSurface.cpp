@@ -1,6 +1,6 @@
 #include "BezierSurface.h"
 
-BezierSurface::BezierSurface(int bands, int time, double pSize, double xScal, double yScal, double zScal)
+BezierSurface::BezierSurface(int bands, int time, double pSize, double xScal, double yScal, double zScal, ColorGradient* cMap)
 {
   // variables dealing with the number of patches
   numPatches = bands - 1;
@@ -34,6 +34,9 @@ BezierSurface::BezierSurface(int bands, int time, double pSize, double xScal, do
       surface[i][j] = BezierPatch4(topLeft, topRight, bottom);
     }
   }
+
+  // set color gradient
+  colorMap = cMap;
 }
 
 BezierSurface::~BezierSurface()
@@ -97,7 +100,7 @@ bool BezierSurface::addBand(float * amps)
   surface[numPatches - 1][maxTime - 1].join(&(surface[numPatches - 1][maxTime - 2]), 0, amps[numPatches]);
 
   // second pass for C1 continuity
-  for (int i = 0; i < numPatches - 1; i++)
+  for (int i = 0; i < numPatches; i++)
   {
     // patch above the current one
     BezierPatch4* topPatch = &(surface[i][maxTime - 2]);
@@ -115,6 +118,13 @@ bool BezierSurface::addBand(float * amps)
       surface[i][maxTime - 1].joinCont(topPatch, leftPatch);
     }
   }
+
+  /*// add colors
+  for (int i = 0; i < numPatches; i++)
+  {
+    // loop through the patches control points
+    surface[i][maxTime - 1].setColors(colorMap, yScale);
+  }*/
 
   return true;
 }
@@ -136,6 +146,8 @@ void BezierSurface::pushBack()
       BezierPatch4 nextPatch = surface[i][j + 1];
       // get all the y values from the next patch
       currPatch.copyAmplitude(nextPatch);
+      // get all the color values from the next patch
+      currPatch.copyColor(nextPatch);
 
       // move all of the rows back
       surface[i][j] = currPatch;

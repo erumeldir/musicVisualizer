@@ -4,6 +4,7 @@
 #include <iostream>
 #include "visualizer.h"
 #include <math.h>
+#include <algorithm>
 
 #define ENABLE_INIT_TESTING false
 
@@ -55,20 +56,29 @@ void Visualizer::updateScene()
 				glVertex3f((barLoc-5)*2,-5.0+(fftBuf[i]*40.0),0.0);
 				glVertex3f((barLoc-5)*2, -5.0, 0.0);
 			glEnd();
-		}
+		}*/
 		//test logfft stuff
-    bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
+		bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		//for(int i=START_BAND;i<BANDS_IN_USE+START_BAND;i++)
 		for(int i=0;i<BANDS_IN_USE;i++)
 		{
 			glLineWidth(4.5);
-			glColor3f(1, 1, 1);
+			Vector4 color = colorMap.getColor(fftBands[i]);
+			glColor4f(color[0],color[1],color[2],color[3]);
 			glBegin(GL_LINES);
-				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,10.0 + patchBands[i]*20,0.0);
-				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 10.0, 0.0);
+				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,60.0 + patchBands[i]*20,0.0);
+				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 60.0, 0.0);
 			glEnd();
-		}*/
-    bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
+		}
+    memcpy(&patchBands[BANDS_IN_USE],&patchBands[0],sizeof(float) * 8);
+
+    for (int i = 0; i < 4; i++)
+    {
+      float temp = patchBands[BANDS_IN_USE + i];
+      patchBands[BANDS_IN_USE + i] = patchBands[BANDS_IN_USE + 7 - i];
+      patchBands[BANDS_IN_USE + 8 - i] = temp;
+    }
+  //  bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		surface->addBand(patchBands);
 	}
 	else
@@ -149,27 +159,30 @@ void Visualizer::init(int* argcp, char** argv)
 	world->reset();	//reset to identity
 
   // TESTING: ShaderGroup object turns things blue to test shadergroup
-  testShader3 = new Shader("shaders/mainShader.vs", "shaders/mainShader.fs", true);
-  ShaderGroup* testShad3 = new ShaderGroup(testShader3);
+ // testShader3 = new Shader("shaders/mainShader.vs", "shaders/mainShader.fs", true);
+ // ShaderGroup* testShad3 = new ShaderGroup(testShader3);
 
   // Highest layer: Transform up right and apply blue shader
   MatrixTransform* right = new MatrixTransform();
   right->localTranslate(0, -8, -8);
   
   // test bezier surface
-  surface = new BezierSurface(BANDS_IN_USE,15, 1,10,80,15);
+  surface = new BezierSurface(BANDS_IN_USE+8,15, 1,17,150,25, &colorMap);
 
   // Test glowing
-  GlowGroup* testGlow = new GlowGroup(shader_map["mainShader"],true);
+ /* GlowGroup* testGlow = new GlowGroup(shader_map["mainShader"],true);
   testGlow->addChild(new Sphere(10.0, 20, 10));
   right->addChild(testGlow);
   //testGlow->addChild(surface);
+  right->addChild(testGlow);*/
 
 
   //testShad3->addChild(surface);
   //right->addChild(testShad3);
-  right->addChild(surface);
+ // right->addChild(surface);
   //testGlow->addChild(surface);
+ // testShad3->addChild(surface);
+  right->addChild(surface);
   world->addChild(right);
 
 
@@ -186,7 +199,7 @@ void Visualizer::init(int* argcp, char** argv)
 		testShader3 = new Shader("shaders/simpleGreen.vert", "shaders/simpleGreen.frag", true);
 		ShaderGroup* testShad = new ShaderGroup(testShader);
 		ShaderGroup* testShad2 = new ShaderGroup(testShader2);
-		ShaderGroup* testShad3 = new ShaderGroup(testShader3);
+		ShaderGroup* testShad3 = new ShaderGroup(testShader);
 
 		// Highest layer: Transform up right and apply blue shader
 		MatrixTransform* right = new MatrixTransform();
@@ -240,12 +253,20 @@ void Visualizer::init(int* argcp, char** argv)
 	audioManager = new AudioManager();
 	//fftBuf = new float[FFT_SIZE];
 
-	audioManager->loadSound("Strobe.mp3");
+	audioManager->loadSound("timescar.mp3");
 	audioManager->play();
 
   // Set world to look at the surface
   world->localRotateY(M_PI);
-  world->localTranslate(Vector3(0,-28,75));
+  world->localTranslate(Vector3(0,-71,208));
+
+  //test color gradients
+  //colorMap.addColor(Vector3(   0.0,   0.0,     0.0));
+  colorMap.addColor(Vector3(0.1992,   0.0,  0.2578));
+  colorMap.addColor(Vector3(0.5039, 0.0036, 0.2031));
+  colorMap.addColor(Vector3(0.9726, 0.2773, 0.0351));
+  colorMap.addColor(Vector3(0.9922, 0.6719, 0.1367));
+  colorMap.addColor(Vector3(0.9648, 0.8984,    0.0));
 
 }
 

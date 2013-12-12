@@ -33,3 +33,5 @@ Debug\*
 *.wav
 *.ogg
 *.aac
+
+*.exe
