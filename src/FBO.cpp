@@ -10,6 +10,23 @@ FBO::FBO(unsigned int w, unsigned int h) : width(w), height(h)
 	maskBuf = false;
 }
 
+FBO::~FBO()
+{
+	if (isValidFBO)
+	{
+		glDeleteTextures(1, &fboTex);
+		glDeleteFramebuffers(1, &fboId);
+		if (depthStencilBuf)
+		{
+			glDeleteRenderbuffers(1, &rbo_depth_stencil);
+		}
+
+		if (maskBuf)
+		{
+			glDeleteTextures(1, &fboMask);
+		}
+	}
+}
 
 void FBO::generateColorOnly()
 {
