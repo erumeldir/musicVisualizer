@@ -49,6 +49,6 @@ void main( void ) {
 
   gl_FragColor = vec4(clamp(sin(p.y - 0.1), 0.0, 0.6), baseColor.gb, 1.0);
   gl_FragColor.r *= .6;
-  gl_FragColor.r += sin(time/2.0)*.025;
-  gl_FragColor.r += tempo*.1;
+  gl_FragColor.r += sin(time/3.0)*.015;
+  gl_FragColor.r += tempo*.2;
 }  

@@ -138,6 +138,10 @@ void Visualizer::updateScene()
 			long new_beat_time = GetTickCount();
 			tempo = .95*tempo + 4000*(1/((float)(new_beat_time-last_beat_time)));
 		}
+		else
+		{
+			tempo = .95*tempo;
+		}
 	}
 	else
 	{
@@ -170,7 +174,7 @@ void Visualizer::init(int* argcp, char** argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);   // open an OpenGL context with double buffering, RGB colors, and depth buffering
     glutInitWindowSize(width, height);							// set initial window size
     glutCreateWindow("Music Visualizer");    		            // open window and set window title
-	glutFullScreen();
+	//glutFullScreen();
 
 	//set up OpenGL
 	glEnable(GL_DEPTH_TEST);            	    // enable depth buffering
