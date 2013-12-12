@@ -38,6 +38,9 @@ BezierSegment *curvePos1, *curvePos2;
 float last_camX = 0, last_camY = 0, last_time, total_time_move = 0.5, total_time_rotate = 0;
 bool moving = true;
 
+long last_beat_time;
+float tempo = 0.0;
+
 Vector4 bassColor;
 
 /*******************************SCENE UPDATE**********************************/
@@ -51,31 +54,34 @@ void Visualizer::updateScene()
 	float dR;
 	float dt;
 
-	dt = new_time - last_time;
-	dt *= SCALE_MOVE_SPEED;
-	total_time_move += dt;
-	if (total_time_move >= 2.0)
-		total_time_move = 0.0;
-
-	if (total_time_move < 1.0)
+	if (moving)
 	{
-		new_camX = curvePos1->getX(total_time_move);
-		new_camY = curvePos1->getY(total_time_move);
-	}
-	else
-	{
-		new_camX = curvePos2->getX(total_time_move - 1.0);
-		new_camY = curvePos2->getY(total_time_move - 1.0);
-	}
-	dX = new_camX - last_camX;
-	dY = new_camY - last_camY;
+		dt = new_time - last_time;
+		dt *= SCALE_MOVE_SPEED;
+		total_time_move += dt;
+		if (total_time_move >= 2.0)
+			total_time_move = 0.0;
 
-	dR = -dX/100.0;
-	world->localRotateY(dR);
-	world->globalTranslate(Vector3(dX, dY, 0.0));
-	last_camX = new_camX;
-	last_camY = new_camY;
-	last_time = new_time;
+		if (total_time_move < 1.0)
+		{
+			new_camX = curvePos1->getX(total_time_move);
+			new_camY = curvePos1->getY(total_time_move);
+		}
+		else
+		{
+			new_camX = curvePos2->getX(total_time_move - 1.0);
+			new_camY = curvePos2->getY(total_time_move - 1.0);
+		}
+		dX = new_camX - last_camX;
+		dY = new_camY - last_camY;
+
+		dR = -dX/100.0;
+		world->localRotateY(dR);
+		world->globalTranslate(Vector3(dX, dY, 0.0));
+		last_camX = new_camX;
+		last_camY = new_camY;
+		last_time = new_time;
+	}
 
   audioManager->update();
 
@@ -126,7 +132,12 @@ void Visualizer::updateScene()
   //  bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		surface->addBand(patchBands);
 		Vector4 bCol = colorMap.getColor(.005);
-		bassColor.set(bCol.get(0), bCol.get(1), bCol.get(2), bCol.get(3));;
+		bassColor.set(bCol.get(0), bCol.get(1), bCol.get(2), bCol.get(3));
+		if (patchBands[1] > 0.3)
+		{
+			long new_beat_time = GetTickCount();
+			tempo = .95*tempo + 4000*(1/((float)(new_beat_time-last_beat_time)));
+		}
 	}
 	else
 	{
@@ -337,6 +348,7 @@ void Visualizer::init(int* argcp, char** argv)
   curvePos2 = new BezierSegment(p0, p1, p2, p3);
 
   last_time = GetTickCount()/1500.0;
+  last_beat_time = GetTickCount();
 }
 
 /*
@@ -504,6 +516,7 @@ void Visualizer::displayCallback()
 
 	shader_map["coolShader"]->bind();
 	shader_map["coolShader"]->uniform1f("time", GetTickCount()/1000.0);
+	shader_map["coolShader"]->uniform1f("tempo", tempo);
 	shader_map["coolShader"]->uniform2f("resolution",Visualizer::getInstance()->height,Visualizer::getInstance()->width);
 	shader_map["coolShader"]->uniform3f("baseColor", bassColor[0], bassColor[1], bassColor[2]);
 	// Draw result on a quad
@@ -645,6 +658,9 @@ void Visualizer::onKeyboard(unsigned char key, int x, int y)
     break;
   case 'g':
 	  egg->toggleGlow();
+	  break;
+  case 'm':
+	  moving = !moving;
 	  break;
   case 27:
       exit(0);
