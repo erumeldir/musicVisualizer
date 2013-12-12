@@ -170,11 +170,10 @@ void Visualizer::init(int* argcp, char** argv)
   surface = new BezierSurface(BANDS_IN_USE+8,15, 1,17,150,25, &colorMap);
 
   // Test glowing
- /* GlowGroup* testGlow = new GlowGroup(shader_map["mainShader"],true);
+  GlowGroup* testGlow = new GlowGroup(shader_map["mainShader"],true);
   testGlow->addChild(new Sphere(10.0, 20, 10));
-  right->addChild(testGlow);
   //testGlow->addChild(surface);
-  right->addChild(testGlow);*/
+  right->addChild(testGlow);
 
 
   //testShad3->addChild(surface);
