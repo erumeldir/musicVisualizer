@@ -52,10 +52,6 @@ private:
 	//lights
 	Light* lights[NUM_LIGHTS];
 
-	//geometry
-    Sphere* testSphere;
-	ColorGradient colorMap;
-
 	//scene graph groups
 	MatrixTransform* world;
 

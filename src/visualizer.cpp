@@ -29,6 +29,7 @@ bool blurDirUp = true;
 
 
 ParticleSystem * particleSystem;
+ParticleSystem** particleArray;
 
 /*******************************SCENE UPDATE**********************************/
 void Visualizer::updateScene()
@@ -80,8 +81,28 @@ void Visualizer::updateScene()
       patchBands[BANDS_IN_USE + i] = patchBands[BANDS_IN_USE + 7 - i];
       patchBands[BANDS_IN_USE + 8 - i] = temp;
     }
+
     bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		surface->addBand(patchBands);
+
+    // testing particles
+    if (audioManager->detectBeat(patchBands))
+    {
+      // right side
+      for (int i = 0; i < 14; i++)
+      {
+        for (int j = 0; j < 4; j++)
+          particleArray[i]->triggerEmitter(Vector3(rand() % 260 - 130, rand() % 80 + 150, rand() % 80 - 40));
+      }
+
+      // left side
+      for (int i = 15; i < 29; i++)
+      {
+        for (int j = 0; j < 4; j++)
+          particleArray[i]->triggerEmitter(Vector3(-1 * (rand() % 260 - 130), rand() % 80 + 150, rand() % 80 - 40));
+      }
+    }
+
 	}
 	else
 	{
@@ -169,7 +190,7 @@ void Visualizer::init(int* argcp, char** argv)
   right->localTranslate(0, -8, -8);
   
   // test bezier surface
-  surface = new BezierSurface(BANDS_IN_USE+8,15, 1,17,200,25, &colorMap);
+  surface = new BezierSurface(BANDS_IN_USE+8,15, 1,17,200,25, 0);
 
   // Test glowing
   GlowGroup* testGlow = new GlowGroup(shader_map["mainShader"],true);
@@ -188,7 +209,28 @@ void Visualizer::init(int* argcp, char** argv)
   world->addChild(right);
 
   // testing particles
-  particleSystem = new ParticleSystem(Vector3(0, 100, 0), 1000, 4000);
+  // upper and left bounds of the xz plane
+  double left = (BANDS_IN_USE + 8) / 2.0 * 1 *17;
+  double top = 15 / 2.0*-1 *25;
+
+  /*****************************************************/
+
+  particleArray = new ParticleSystem*[30];
+  // initialization of each patch (start at height zero)
+  for (int i = 0; i < 14; i++)
+  {
+      ParticleSystem* curr = new ParticleSystem(Vector3(-60,60,i*50-100), 1000, 1500, "resources/ember01.png", shader_map["mainShader"]);
+      testGlow->addChild(curr);
+      particleArray[i] = curr;
+  }
+  for (int i = 15; i < 29; i++)
+  {
+    ParticleSystem* curr = new ParticleSystem(Vector3(60, 60, (i-15) * 50 - 100), 1000, 1500, "resources/ember01.png", shader_map["mainShader"]);
+    testGlow->addChild(curr);
+    particleArray[i] = curr;
+  }
+
+  particleSystem = new ParticleSystem(Vector3(0, 80, 0), 1000, 4000,"resources/ember01.png", shader_map["mainShader"]);
   testGlow->addChild(particleSystem);
 
 
@@ -196,8 +238,6 @@ void Visualizer::init(int* argcp, char** argv)
 	if(ENABLE_INIT_TESTING)
 	{
 		//TESTING, replace with scene stuff
-		testSphere = new Sphere(3,20,20);
-		world->addChild(testSphere);
 
 		// TESTING: ShaderGroup object turns things blue to test shadergroup
 		testShader = new Shader("shaders/simpleBlue.vert", "shaders/simpleBlue.frag", true);
@@ -259,20 +299,12 @@ void Visualizer::init(int* argcp, char** argv)
 	audioManager = new AudioManager();
 	//fftBuf = new float[FFT_SIZE];
 
-	audioManager->loadSound("timescar.mp3");
+	audioManager->loadSound("Strobe.mp3");
 	audioManager->play();
 
   // Set world to look at the surface
   world->localRotateY(M_PI);
   world->localTranslate(Vector3(0,-71,208));
-
-  //test color gradients
-  //colorMap.addColor(Vector3(   0.0,   0.0,     0.0));
-  colorMap.addColor(Vector3(0.1992,   0.0,  0.2578));
-  colorMap.addColor(Vector3(0.5039, 0.0036, 0.2031));
-  colorMap.addColor(Vector3(0.9726, 0.2773, 0.0351));
-  colorMap.addColor(Vector3(0.9922, 0.6719, 0.1367));
-  colorMap.addColor(Vector3(0.9648, 0.8984,    0.0));
 
 }
 
@@ -337,6 +369,7 @@ void Visualizer::displayCallback()
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);  // clear color and depth buffers
 	glMatrixMode(GL_MODELVIEW);
+
 
 	//draw stuff here
 	Matrix4 IDENTITY;
@@ -582,13 +615,16 @@ void Visualizer::onKeyboard(unsigned char key, int x, int y)
   case 'g':
 	  egg->toggleGlow();
   case 'e':
+   /* particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
     particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
     particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
     particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
     particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
     particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
-    particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
-    particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
+    particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));*/
+   // particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, 0));
+
+
     break;
 	default:
 		break;
@@ -608,4 +644,37 @@ int main(int argc, char* argv[])
   glDeleteFramebuffers(1, &fbo);
   glDeleteBuffers(1, &vbo_fbo_vertices);
   */
+}
+
+Visualizer::~Visualizer()
+{
+  delete testShader;
+  delete testShader2;
+  delete testShader3;
+
+  for (map<char*, Shader*>::iterator it = shader_map.begin(); it != shader_map.end(); it++)
+  {
+    delete it->second;
+  }
+
+  /*for (map<char*, FBO*>::iterator it = fbo_map.begin(); it != fbo_map.end(); it++)
+  {
+    delete it->second;
+  }*/
+
+  delete[] controlPoints;
+  delete patch1;
+  delete surface;
+
+  delete egg;
+
+  delete particleSystem;
+  delete[] particleArray;
+
+  delete[] lights;
+
+  delete world;
+
+  delete audioManager;
+
 }

@@ -3,6 +3,7 @@
 
 #include "Timer.h"
 #include "Geometry.h"
+#include "Shader.h"
 #include <GL/glut.h>
 
 enum ParticleState { DEAD, ALIVE };
@@ -32,11 +33,13 @@ protected:
   int numParticles;       // number of current active particles
   int globalLifetime;  // global lifetime reference point of all the particles in the system
   int prevFrameTime;   // time at which the previous frame was rendered
+  GLuint particleSprite;  //the texture for the particle
+  Shader* particleShader; // pointer to the particle shader
 
   Timer frameTimer;       // object used to calculate milliseconds
 
 public:
-  ParticleSystem(Vector3 pos, int nParticles, double lifetime);
+  ParticleSystem(Vector3 pos, int nParticles, double lifetime, char* spriteName, Shader* particleShader);
   ~ParticleSystem();
 
   void draw(Matrix4, Frustum, bool);    // overidden draw method from Node

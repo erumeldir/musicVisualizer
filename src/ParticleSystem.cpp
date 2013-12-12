@@ -1,13 +1,28 @@
 #include "ParticleSystem.h"
+#include "SOIL.h"
 
 
-ParticleSystem::ParticleSystem(Vector3 pos, int nParticles, double lifetime)
+ParticleSystem::ParticleSystem(Vector3 pos, int nParticles, double lifetime, char* spriteName, Shader* partShader)
 {
   // create space for all for the particles
   particles = new Particle[nParticles];
   numParticles = nParticles;
   position = pos;
   globalLifetime = lifetime;
+  particleSprite = SOIL_load_OGL_texture
+    (
+    spriteName,
+    SOIL_LOAD_AUTO,
+    SOIL_CREATE_NEW_ID,
+    SOIL_FLAG_MIPMAPS | SOIL_FLAG_INVERT_Y | SOIL_FLAG_NTSC_SAFE_RGB | SOIL_FLAG_COMPRESS_TO_DXT
+    );
+
+  if (0 == particleSprite)
+  {
+    printf("SOIL loading error: '%s'\n", SOIL_last_result());
+  }
+
+  particleShader = partShader;
 }
 
 
@@ -101,12 +116,22 @@ void ParticleSystem::triggerEmitter(Vector3 direction)
  */
 void ParticleSystem::draw(Matrix4, Frustum, bool)
 {
+  // turning on flag in shader
+  particleShader->uniform1i("particle", 1);
+  glActiveTexture(GL_TEXTURE0 + 2);
+  glBindTexture(GL_TEXTURE_2D, particleSprite);
+  particleShader->uniform1i("tex", 2);
+
+  glEnable(GL_POINT_SPRITE);
+
   // get the current time
   int currentTime = frameTimer.getElapsedTimeInMilliSec();
   // array of vertices to pass to shader
   float* vertices = new float[numParticles * 3];
   float* initialVel = new float[numParticles * 3];
   float* time = new float[numParticles];
+  glPointSize(7);
+  //glTexEnvi(GL_POINT_SPRITE, GL_COORD_REPLACE, GL_TRUE);
 
   // update particles' existence time
   for (int i = 0; i < numParticles; i++)
@@ -123,19 +148,21 @@ void ParticleSystem::draw(Matrix4, Frustum, bool)
       particles[i].reset();
     else
     {
-      glPointSize(5);
+
+
       if (particles[i].state == ALIVE)
       {
-        // draw particles' vertices
+      // draw particles' vertices
          glBegin(GL_POINTS);
          glColor4f(1, 1, 1, 1);
-         Vector3 g(0, -9.8 * 3, 0);
+         Vector3 g(0, -9.8 * 30, 0);
          float t = particles[i].time / 1000.0;
          g.scale(0.5 * t * t);
          currVel.scale(t);
          currPoint += currVel + g;
          glVertex3f(currPoint[0], currPoint[1], currPoint[2]);        
          glEnd();
+
       }
       else{
         // draw particles' vertices
@@ -145,6 +172,7 @@ void ParticleSystem::draw(Matrix4, Frustum, bool)
         glEnd();*/
       }
     }
+    glBindTexture(GL_TEXTURE_2D, 0);
 
     // set initial position for vertex shader
     vertices[i * 3] = currPoint[0];
@@ -160,6 +188,9 @@ void ParticleSystem::draw(Matrix4, Frustum, bool)
   // update prevTime
   prevFrameTime = currentTime;
 
+
+  //
+  particleShader->uniform1i("particle", 0);
 }
 
 // overidden bounding sphere method from Node

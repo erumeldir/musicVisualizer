@@ -1,4 +1,7 @@
+#version 120
 
+uniform sampler2D tex;
+uniform int particle;
 uniform float glow;
 
 varying vec3 normal, lightDir, eyeVec;
@@ -50,4 +53,14 @@ void main()
     if (glow == 1.0)
         gl_FragData[0] = materialDiffuse;
     gl_FragData[1] = vec4(glow, 0.0, 0.0, 1.0);
+
+    if(particle == 1)
+    {
+        //vec4 texture = texture2D(tex, gl_PointCoord);
+        if(sqrt(pow(gl_PointCoord.s-0.5,2)+pow(gl_PointCoord.t-0.5,2))<0.3)
+            gl_FragData[0] = final_color;
+		else 
+			discard;//gl_FragData[0] = final_color;  
+    }
+
 }
