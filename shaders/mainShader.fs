@@ -47,7 +47,7 @@ void main()
 		final_color += gl_LightSource[0].specular * gl_FrontMaterial.specular * specular;
 	}
     gl_FragData[0] = final_color;
-    if (glow == 1.0)
-        gl_FragData[0] = materialDiffuse;
+    //if (glow == 1.0)
+    //    gl_FragData[0] = materialDiffuse;
     gl_FragData[1] = vec4(glow, 0.0, 0.0, 1.0);
 }

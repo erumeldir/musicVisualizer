@@ -6,9 +6,14 @@
 #include <math.h>
 #include <algorithm>
 
+#include "BezierSegment.h"
+#include "BezierPath.h"
+
+#define SCALE_MOVE_SPEED .025
+
 #define ENABLE_INIT_TESTING false
 
-//initizlize visualizer instance
+//initialize visualizer instance
 bool Visualizer::instanceFlag = false;
 Visualizer* Visualizer::instance = NULL;
 Shader* testShader;
@@ -28,15 +33,51 @@ GlowGroup* egg;
 float blurSize = 0.0;
 bool blurDirUp = true;
 
+BezierSegment *curvePos1, *curvePos2;
 
+float last_camX = 0, last_camY = 0, last_time, total_time_move = 0.5, total_time_rotate = 0;
+bool moving = true;
 
 /*******************************SCENE UPDATE**********************************/
 void Visualizer::updateScene()
 {
+	float new_time = GetTickCount()/1500.0;
+	float new_camX;
+	float new_camY;
+	float dX;
+	float dY;
+	float dR;
+	float dt;
+
+	dt = new_time - last_time;
+	dt *= SCALE_MOVE_SPEED;
+	total_time_move += dt;
+	if (total_time_move >= 2.0)
+		total_time_move = 0.0;
+
+	if (total_time_move < 1.0)
+	{
+		new_camX = curvePos1->getX(total_time_move);
+		new_camY = curvePos1->getY(total_time_move);
+	}
+	else
+	{
+		new_camX = curvePos2->getX(total_time_move - 1.0);
+		new_camY = curvePos2->getY(total_time_move - 1.0);
+	}
+	dX = new_camX - last_camX;
+	dY = new_camY - last_camY;
+
+	dR = -dX/100.0;
+	world->localRotateY(dR);
+	world->globalTranslate(Vector3(dX, dY, 0.0));
+	last_camX = new_camX;
+	last_camY = new_camY;
+	last_time = new_time;
+
   audioManager->update();
 
 	//do update stuff here
-	blurSize = 0.0;
 
 	bool fftSucceeded = false;
 	fftSucceeded = audioManager->getLogFFT(fftBuf,FFT_SIZE,fftBands,FFT_NUM_BANDS);
@@ -260,7 +301,7 @@ void Visualizer::init(int* argcp, char** argv)
 
   // Set world to look at the surface
   world->localRotateY(M_PI);
-  world->localTranslate(Vector3(0,-71,208));
+  world->localTranslate(Vector3(0,-90,208));
 
   //test color gradients
   //colorMap.addColor(Vector3(   0.0,   0.0,     0.0));
@@ -270,6 +311,27 @@ void Visualizer::init(int* argcp, char** argv)
   colorMap.addColor(Vector3(0.9922, 0.6719, 0.1367));
   colorMap.addColor(Vector3(0.9648, 0.8984,    0.0));
 
+
+  float p0[2] = {-30.0, 0.0};
+  float p1[2] = {-20.0, 25.0};
+  float p2[2] = {30.0, 25.0};
+  float p3[2] = {30.0, 0.0};
+  curvePos1 = new BezierSegment(p0, p1, p2, p3);
+
+  p0[0] = 30.0;
+  p0[1] = 0.0;
+
+  p1[0] = 20.0;
+  p1[1] = 10.0;
+
+  p2[0] = -30.0;
+  p2[1] = 10.0;
+
+  p3[0] = -30.0;
+  p3[1] = 0.0;
+  curvePos2 = new BezierSegment(p0, p1, p2, p3);
+
+  last_time = GetTickCount()/1500.0;
 }
 
 /*

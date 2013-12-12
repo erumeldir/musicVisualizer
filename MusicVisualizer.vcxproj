@@ -102,6 +102,8 @@
   <ItemGroup>
     <ClCompile Include="src\AudioManager.cpp" />
     <ClCompile Include="src\BezierPatch4.cpp" />
+    <ClCompile Include="src\BezierPath.cpp" />
+    <ClCompile Include="src\BezierSegment.cpp" />
     <ClCompile Include="src\BezierSurface.cpp" />
     <ClCompile Include="src\Camera.cpp" />
     <ClCompile Include="src\ColorGradient.cpp" />
@@ -124,6 +126,8 @@
   <ItemGroup>
     <ClInclude Include="src\AudioManager.h" />
     <ClInclude Include="src\BezierPatch4.h" />
+    <ClInclude Include="src\BezierPath.h" />
+    <ClInclude Include="src\BezierSegment.h" />
     <ClInclude Include="src\BezierSurface.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\ColorGradient.h" />

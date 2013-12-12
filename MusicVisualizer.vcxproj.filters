@@ -61,6 +61,12 @@
     <ClCompile Include="src\ColorGradient.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\BezierPath.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BezierSegment.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BezierPatch4.h">
@@ -124,6 +130,12 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\BezierSurface.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BezierPath.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BezierSegment.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
