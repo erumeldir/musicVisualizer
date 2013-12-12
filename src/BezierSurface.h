@@ -12,6 +12,7 @@
  */
 
 #include "BezierPatch4.h"
+#include "ColorGradient.h"
 
 class BezierSurface : public Geode
 {
@@ -23,9 +24,10 @@ protected:
   double yScale; // how much to scale the height by when adding an amplitude
   double zScale; // how much to scale the depth by when making the patches
   BezierPatch4** surface; // multidimensional array of Bezier patches representing the surface
+  ColorGradient* colorMap; // Color map for the surface
 
 public:
-  BezierSurface(int bands, int time, double pSize, double xScale = 1, double yScale = 1, double zScale = 1);
+  BezierSurface(int bands, int time, double pSize, double xScale = 1, double yScale = 1, double zScale = 1, ColorGradient* colorMap = 0);
   ~BezierSurface();
 
   // getter for a patch

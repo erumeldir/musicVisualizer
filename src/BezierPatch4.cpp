@@ -13,10 +13,18 @@ BezierPatch4::BezierPatch4()
         ctrlpoints[i][j][0] = currentVec.get(0);
         ctrlpoints[i][j][1] = currentVec.get(1);
         ctrlpoints[i][j][2] = currentVec.get(2);
+
+        // set initial color to white
+        colors[i][j][0] = 0;
+        colors[i][j][1] = 0;
+        colors[i][j][2] = 0;
+        colors[i][j][3] = 0;
       }
     }
 
+ //   glEnable(GL_COLOR_MATERIAL);
     glEnable(GL_MAP2_VERTEX_3);
+ //   glEnable(GL_MAP2_COLOR_4);
     glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0);
     glEnable(GL_DEPTH_TEST);
     glShadeModel(GL_FLAT);
@@ -51,9 +59,17 @@ BezierPatch4::BezierPatch4(Vector3 topLeft, Vector3 topRight, Vector3 lowerBound
       ctrlpoints[i][j][0] = currentVec.get(0);
       ctrlpoints[i][j][1] = currentVec.get(1);
       ctrlpoints[i][j][2] = currentVec.get(2);
+
+      // set initial color to white
+      colors[i][j][0] = 0;
+      colors[i][j][1] = 0;
+      colors[i][j][2] = 0;
+      colors[i][j][3] = 0;
     }
   }
+ // glEnable(GL_COLOR_MATERIAL);
   glEnable(GL_MAP2_VERTEX_3);
+ // glEnable(GL_MAP2_COLOR_4);
   glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0);
   glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_FLAT);
@@ -74,6 +90,12 @@ BezierPatch4::BezierPatch4(Vector3 * controlPoints)
       ctrlpoints[i][j][1] = currentVec.get(1);
       ctrlpoints[i][j][2] = currentVec.get(2);
 
+      // set initial color to white
+      colors[i][j][0] = 0;
+      colors[i][j][1] = 0;
+      colors[i][j][2] = 0;
+      colors[i][j][3] = 0;
+
       // add to amplitude
       amplitude += currentVec.get(1);
     }
@@ -83,6 +105,7 @@ BezierPatch4::BezierPatch4(Vector3 * controlPoints)
   amplitude /= NUM_CONTROL_POINTS;
 
   glEnable(GL_MAP2_VERTEX_3);
+//  glEnable(GL_MAP2_COLOR_4);
   glMapGrid2f(20, 0.0, 1.0, 20, 0.0, 1.0);
   glEnable(GL_DEPTH_TEST);
   glShadeModel(GL_FLAT);
@@ -114,6 +137,64 @@ Vector3 BezierPatch4::getControlPoint(int m, int n)
   return Vector3(ctrlpoints[m][n][0], ctrlpoints[m][n][1], ctrlpoints[m][n][2]);
 }
 
+// takes a color map and sets each points color based on it's amp
+void BezierPatch4::setColors(ColorGradient* colorMap, double yScale)
+{
+  // loop through every control point
+  for (int i = 0; i < 4; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      // set the color based on the yscale
+      Vector4 newColor = colorMap->getColor(ctrlpoints[i][j][1] / yScale);
+
+     /* colors[i][j][0] = newColor[0];
+      colors[i][j][1] = newColor[1];
+      colors[i][j][2] = newColor[2];
+      colors[i][j][3] = newColor[3]; */
+      
+      colors[i][j][0] = 0;
+      colors[i][j][1] = 1;
+      colors[i][j][2] = 1;
+      colors[i][j][3] = 1;
+    }
+  }
+}
+
+
+// changes the color of a single control point
+void BezierPatch4::setColor(int m, int n, Vector4 vec)
+{
+  colors[m][n][0] = vec.get(0);
+  colors[m][n][1] = vec.get(1);
+  colors[m][n][2] = vec.get(2);
+  colors[m][n][3] = vec.get(3);
+}
+
+// gets the color of a single control point
+Vector4 BezierPatch4::getColor(int m, int n)
+{
+  return Vector4(colors[m][n][0], colors[m][n][1], colors[m][n][2], colors[m][n][3]);
+}
+
+/*
+* copyColor
+* copies the color and the respective y values of
+* the given patch to the current patch.
+*/
+void BezierPatch4::copyColor(BezierPatch4 other)
+{
+  for (int i = 0; i < 4; i++)
+  {
+    for (int j = 0; j < 4; j++)
+    {
+      colors[i][j][0] = other.getColor(i, j)[0];
+      colors[i][j][1] = other.getColor(i, j)[1];
+      colors[i][j][2] = other.getColor(i, j)[2];
+      colors[i][j][3] = other.getColor(i, j)[3];
+    }
+  }
+}
 
 // draws the bezier curve
 void BezierPatch4::draw(Matrix4 C, Frustum F, bool checkCulling)
@@ -121,6 +202,8 @@ void BezierPatch4::draw(Matrix4 C, Frustum F, bool checkCulling)
   // load control points
   glMap2f(GL_MAP2_VERTEX_3, 0, 1, 3, 4,
     0, 1, 12, 4, &ctrlpoints[0][0][0]);
+ /* glMap2f(GL_MAP2_COLOR_4, 0, 1, 4, 4,
+    0, 1, 16, 4, &colors[0][0][0]);*/
 
   // draw curve
   glLoadMatrixd(C.getPointer());

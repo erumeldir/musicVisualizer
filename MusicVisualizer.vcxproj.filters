@@ -58,6 +58,9 @@
     <ClCompile Include="src\GlowGroup.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\ColorGradient.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BezierPatch4.h">
@@ -109,6 +112,12 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\FBO.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BezierSurface.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorGradient.h">
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\GlowGroup.h">
