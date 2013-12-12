@@ -23,6 +23,14 @@ GlowGroup::~GlowGroup()
   }
 }
 
+void GlowGroup::toggleGlow()
+{
+	if (glow == 1.0)
+		glow = 0.0;
+	else
+		glow = 1.0;
+}
+
 /*
 * Apply the matrix transform and draw all the children
 */

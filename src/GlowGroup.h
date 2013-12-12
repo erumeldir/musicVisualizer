@@ -18,6 +18,8 @@ public:
   GlowGroup(Shader*, bool);
   ~GlowGroup();
 
+  void toggleGlow();
+
   void draw(Matrix4, Frustum, bool); //set the shader and draw the child nodes
   void computeBoundingSphere(Matrix4);
 };

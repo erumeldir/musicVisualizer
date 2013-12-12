@@ -23,6 +23,8 @@ Vector3* controlPoints;
 BezierPatch4 * patch1;
 BezierSurface * surface;
 
+GlowGroup* egg;
+
 float blurSize = 0.0;
 bool blurDirUp = true;
 
@@ -175,6 +177,7 @@ void Visualizer::init(int* argcp, char** argv)
   //testGlow->addChild(surface);
   right->addChild(testGlow);
 
+  egg = testGlow;
 
   //testShad3->addChild(surface);
   //right->addChild(testShad3);
@@ -572,6 +575,8 @@ void Visualizer::onKeyboard(unsigned char key, int x, int y)
   case 'z':
     Visualizer::getInstance()->world->globalTranslate(0, 0, 1);
     break;
+  case 'g':
+	  egg->toggleGlow();
 	default:
 		break;
 	}
