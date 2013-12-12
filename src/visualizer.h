@@ -18,6 +18,7 @@
 #include "AudioManager.h"
 #include "ColorGradient.h"
 #include "FBO.h"
+#include "ParticleSystem.h"
 
 
 /*
@@ -50,10 +51,6 @@ private:
 
 	//lights
 	Light* lights[NUM_LIGHTS];
-
-	//geometry
-    Sphere* testSphere;
-	ColorGradient colorMap;
 
 	//scene graph groups
 	MatrixTransform* world;

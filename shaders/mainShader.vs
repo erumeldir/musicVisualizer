@@ -1,3 +1,5 @@
+uniform int particle;
+
 varying vec3 normal, lightDir, eyeVec;
 varying float height;
 void main()

@@ -12,7 +12,6 @@
 *.lai
 *.la
 *.a
-*.lib
 
 #Debug directory
 Debug/*
@@ -35,3 +34,5 @@ Debug\*
 *.aac
 
 *.exe
+
+*.png

@@ -32,8 +32,9 @@ public:
 
   // getter for a patch
 
-  bool addBand(float*); // an array of "numBands" number of bands that gets added to the front
-  void pushBack(); // pushes all of the rows of the surface back a row and zeros out the front row
+  bool addBand(float*);     // an array of "numBands" number of bands that gets added to the front
+  void pushBack();          // pushes all of the rows of the surface back a row and zeros out the front row
+  double getAmp(int, int);  // get's amplitude of the specified patch
 
   // overidden Geode methods
   void draw(Matrix4 C, Frustum F, bool checkCulling); // draws the bezier surface

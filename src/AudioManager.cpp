@@ -1,6 +1,7 @@
 #include "AudioManager.h"
 #include <iostream>
 #include <math.h>
+#include "Timer.h"
 
 using namespace std;
 
@@ -15,6 +16,9 @@ AudioManager::AudioManager()
 {
 	initFMOD();
 	currentStream = NULL;
+  memset(powerArray, 0, sizeof(float)*22);
+  timeBetweenBeats = 500;
+  beatTimer.start();
 }
 
 /*
@@ -316,4 +320,44 @@ bool AudioManager::clampBands(float* fftBands, int bandArraySize, float* clamped
 	}
 
 	return true;
+}
+
+bool AudioManager::detectBeat(float* currentBands)
+{
+  timeElapsed = beatTimer.getElapsedTimeInMilliSec();
+
+  // calculate average of current band
+  float currAverage = 0;
+  for (int i = 0; i < 12; i++)
+  {
+    currAverage += currentBands[i];
+  }
+  currAverage /= 12.0;
+
+  // calc average of the last 22 windows
+  float prevAverage = 0;
+  for (int i = 0; i < 22; i++)
+  {
+    prevAverage += powerArray[i];
+  }
+  prevAverage /= 22.0;
+
+  // push back the values of the power array
+  for (int i = 0; i < 21; i++)
+  {
+    powerArray[i] = powerArray[i+1];
+  }
+  powerArray[21] = currAverage;
+
+  if (currAverage>prevAverage && timeElapsed > timeBetweenBeats && currAverage > .125)
+  {
+    beatTimer.stop();
+    cout << "BEAT " << currAverage << endl;
+    timeElapsed = 0;
+    beatTimer.start();
+    return true;
+  }
+  else{
+    return false;
+  }
 }

@@ -169,3 +169,9 @@ void BezierSurface::pushBack()
     surface[i][maxTime - 1] = BezierPatch4(topLeft, topRight, bottom);
   }
 }
+
+double BezierSurface::getAmp(int i, int j)
+{
+  BezierPatch4 curr = surface[i][j];
+  return surface[i][j].getAmplitude();
+}
