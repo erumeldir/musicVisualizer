@@ -163,6 +163,7 @@ void Visualizer::init(int* argcp, char** argv)
   GlowGroup* testGlow = new GlowGroup(shader_map["mainShader"],true);
   testGlow->addChild(new Sphere(10.0, 20, 10));
   right->addChild(testGlow);
+  //testGlow->addChild(surface);
 
 
   //testShad3->addChild(surface);
@@ -349,7 +350,7 @@ void Visualizer::displayCallback()
 	blurSize = .0051;
 	// Set how blurred the result should be
 	shader_map["horizontalGaussian"]->uniform1f("blurSize", 1.0/1024.0);
-	shader_map["horizontalGaussian"]->uniform1f("sigma", 3.0);
+	shader_map["horizontalGaussian"]->uniform1f("sigma", 10.0);
 
 	// Draw result on a quad
 	glLoadIdentity();
