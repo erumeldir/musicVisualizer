@@ -115,8 +115,10 @@
     <ClCompile Include="src\Matrix4.cpp" />
     <ClCompile Include="src\ModelMatrix.cpp" />
     <ClCompile Include="src\Node.cpp" />
+    <ClCompile Include="src\ParticleSystem.cpp" />
     <ClCompile Include="src\Shader.cpp" />
     <ClCompile Include="src\ShaderGroup.cpp" />
+    <ClCompile Include="src\Timer.cpp" />
     <ClCompile Include="src\Vector3.cpp" />
     <ClCompile Include="src\Vector4.cpp" />
     <ClCompile Include="src\visualizer.cpp" />
@@ -137,8 +139,10 @@
     <ClInclude Include="src\Matrix4.h" />
     <ClInclude Include="src\ModelMatrix.h" />
     <ClInclude Include="src\Node.h" />
+    <ClInclude Include="src\ParticleSystem.h" />
     <ClInclude Include="src\Shader.h" />
     <ClInclude Include="src\ShaderGroup.h" />
+    <ClInclude Include="src\Timer.h" />
     <ClInclude Include="src\Vector3.h" />
     <ClInclude Include="src\Vector4.h" />
     <ClInclude Include="src\visualizer.h" />

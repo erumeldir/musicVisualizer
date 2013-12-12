@@ -1,6 +1,5 @@
 #define _USE_MATH_DEFINES
 
-#include <stdlib.h>
 #include <iostream>
 #include "visualizer.h"
 #include <math.h>
@@ -29,6 +28,7 @@ float blurSize = 0.0;
 bool blurDirUp = true;
 
 
+ParticleSystem * particleSystem;
 
 /*******************************SCENE UPDATE**********************************/
 void Visualizer::updateScene()
@@ -60,7 +60,7 @@ void Visualizer::updateScene()
 			glEnd();
 		}*/
 		//test logfft stuff
-		bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
+	/*	bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		//for(int i=START_BAND;i<BANDS_IN_USE+START_BAND;i++)
 		for(int i=0;i<BANDS_IN_USE;i++)
 		{
@@ -71,7 +71,7 @@ void Visualizer::updateScene()
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5,60.0 + patchBands[i]*20,0.0);
 				glVertex3f((i-FFT_NUM_BANDS/2)*.25+5, 60.0, 0.0);
 			glEnd();
-		}
+		}*/
     memcpy(&patchBands[BANDS_IN_USE],&patchBands[0],sizeof(float) * 8);
 
     for (int i = 0; i < 4; i++)
@@ -80,7 +80,7 @@ void Visualizer::updateScene()
       patchBands[BANDS_IN_USE + i] = patchBands[BANDS_IN_USE + 7 - i];
       patchBands[BANDS_IN_USE + 8 - i] = temp;
     }
-  //  bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
+    bool clampSucceeded = AudioManager::clampBands(fftBands, FFT_NUM_BANDS, patchBands, BANDS_IN_USE, START_BAND);
 		surface->addBand(patchBands);
 	}
 	else
@@ -169,7 +169,7 @@ void Visualizer::init(int* argcp, char** argv)
   right->localTranslate(0, -8, -8);
   
   // test bezier surface
-  surface = new BezierSurface(BANDS_IN_USE+8,15, 1,17,150,25, &colorMap);
+  surface = new BezierSurface(BANDS_IN_USE+8,15, 1,17,200,25, &colorMap);
 
   // Test glowing
   GlowGroup* testGlow = new GlowGroup(shader_map["mainShader"],true);
@@ -186,6 +186,10 @@ void Visualizer::init(int* argcp, char** argv)
  // testShad3->addChild(surface);
   right->addChild(surface);
   world->addChild(right);
+
+  // testing particles
+  particleSystem = new ParticleSystem(Vector3(0, 100, 0), 1000, 4000);
+  testGlow->addChild(particleSystem);
 
 
 	//testing code
@@ -435,7 +439,7 @@ void Visualizer::displayCallback()
 	glEnable(GL_BLEND);
 	glDisable(GL_DEPTH_TEST);
 
-	shader_map["coolShader"]->bind();
+	/*shader_map["coolShader"]->bind();
 	shader_map["coolShader"]->uniform1f("time", GetTickCount()/1000.0);
 	shader_map["coolShader"]->uniform2f("resolution",Visualizer::getInstance()->height,Visualizer::getInstance()->width);
 	// Draw result on a quad
@@ -450,7 +454,7 @@ void Visualizer::displayCallback()
 		glTexCoord2f(1,0);
 		glVertex2f(1,-1);
 	glEnd();
-	shader_map["coolShader"]->unbind();
+	shader_map["coolShader"]->unbind();*/
 
 	shader_map["passthrough"]->bind();
 
@@ -577,6 +581,15 @@ void Visualizer::onKeyboard(unsigned char key, int x, int y)
     break;
   case 'g':
 	  egg->toggleGlow();
+  case 'e':
+    particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
+    particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
+    particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
+    particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
+    particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
+    particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
+    particleSystem->triggerEmitter(Vector3(rand() % 40 - 20, 60, rand() % 40 - 20));
+    break;
 	default:
 		break;
 	}

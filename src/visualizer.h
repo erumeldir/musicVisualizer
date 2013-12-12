@@ -18,6 +18,7 @@
 #include "AudioManager.h"
 #include "ColorGradient.h"
 #include "FBO.h"
+#include "ParticleSystem.h"
 
 
 /*

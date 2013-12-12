@@ -61,6 +61,12 @@
     <ClCompile Include="src\ColorGradient.cpp">
       <Filter>Source</Filter>
     </ClCompile>
+    <ClCompile Include="src\ParticleSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Timer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BezierPatch4.h">
@@ -124,6 +130,12 @@
       <Filter>Header</Filter>
     </ClInclude>
     <ClInclude Include="src\BezierSurface.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ParticleSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Timer.h">
       <Filter>Header</Filter>
     </ClInclude>
   </ItemGroup>
