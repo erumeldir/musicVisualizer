@@ -47,6 +47,14 @@ void Vector3::setVector(Vector3& other)
   m[2] = other.get(2);
 }
 
+// sets vector coordinates to match given vector
+void Vector3::setVector(Vector4& other)
+{
+  m[0] = other.get(0);
+  m[1] = other.get(1);
+  m[2] = other.get(2);
+}
+
 // gets a particular value of a coordinate
 double Vector3::get(int i)
 {

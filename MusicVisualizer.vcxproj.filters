@@ -1,96 +1,232 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Source Files">
-      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
-      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
-    </Filter>
-    <Filter Include="Header Files">
-      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
-      <Extensions>h;hpp;hxx;hm;inl;inc;xsd</Extensions>
-    </Filter>
-    <Filter Include="Resource Files">
-      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
-      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
-    </Filter>
+    <ClCompile Include="src\BezierPatch4.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\visualizer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Frustum.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Geometry.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GLee.c">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Light.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Material.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Matrix4.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ModelMatrix.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Node.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Shader.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ShaderGroup.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vector3.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vector4.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AudioManager.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BezierSurface.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\FBO.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GlowGroup.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ColorGradient.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BezierPath.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\BezierSegment.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ParticleSystem.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Timer.cpp">
+      <Filter>Source</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\BezierPatch4.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Frustum.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Geometry.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GLee.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Light.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Material.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Matrix4.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ModelMatrix.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Node.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Shader.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ShaderGroup.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vector3.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vector4.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\visualizer.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AudioManager.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FBO.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BezierSurface.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ColorGradient.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\GlowGroup.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BezierSurface.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BezierPath.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\BezierSegment.h">
+      <Filter>Source</Filter>
+    </ClCompile>
+    <ClInclude Include="src\ParticleSystem.h">
+      <Filter>Header</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Timer.h">
+      <Filter>Header</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ReadMe.txt" />
+    <None Include="shaders\gaussianBlur.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\gaussianBlur.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\gaussianBlurHorizontal.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\gaussianBlurVertical.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\mainShader.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\mainShader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\passthrough.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\passthrough.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\postproc.f.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\postproc.v.glsl">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleBlue.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleBlue.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleGreen.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleGreen.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleRed.frag">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\simpleRed.vert">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\toonShader.fs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\toonShader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\coolShader.vs">
+      <Filter>Shaders</Filter>
+    </None>
+    <None Include="shaders\coolShader.fs">
+      <Filter>Shaders</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Matrix4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Vector3.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Vector4.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\visualizer.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Camera.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Frustum.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Geometry.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GLee.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Light.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Material.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ModelMatrix.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Node.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="src\Matrix4.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vector3.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vector4.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\visualizer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Frustum.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Geometry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\GLee.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Light.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Material.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\ModelMatrix.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <Filter Include="Header">
+      <UniqueIdentifier>{0965c5c9-065f-48d5-8507-875df9e39c93}</UniqueIdentifier>
+      <Extensions>
+      </Extensions>
+    </Filter>
+    <Filter Include="Source">
+      <UniqueIdentifier>{95d0918f-daa1-42fa-9eaa-5d107669d8f1}</UniqueIdentifier>
+      <Extensions>
+      </Extensions>
+    </Filter>
+    <Filter Include="Shaders">
+      <UniqueIdentifier>{fb3cd9e3-e131-4697-900b-9c7e2620e930}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

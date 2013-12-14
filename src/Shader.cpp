@@ -48,6 +48,30 @@ Shader::unbind()
 	glUseProgramObjectARB(0);
 }
 
+void Shader::uniform1f(const GLchar *name, float val)
+{
+	int i = glGetUniformLocation(pid,name);
+	glUniform1f(i, val);
+}
+
+void Shader::uniform1i(const GLchar *name, int val)
+{
+	int i = glGetUniformLocation(pid,name);
+	glUniform1i(i, val);
+}
+
+void Shader::uniform2f(const GLchar *name, float val1, float val2)
+{
+	int i = glGetUniformLocation(pid,name);
+	glUniform2f(i, val1, val2);
+}
+
+void Shader::uniform3f(const GLchar *name, float val1, float val2, float val3)
+{
+	int i = glGetUniformLocation(pid,name);
+	glUniform3f(i, val1, val2, val3);
+}
+
 void
 Shader::printLog(const char* tag)
 {

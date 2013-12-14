@@ -1,11 +1,27 @@
 #ifndef _VISUALIZER_H_
 #define _VISUALIZER_H_
 
+#define FFT_SIZE      4096	//the fft window resolution (fine tune for speed/quality)
+#define FFT_NUM_BANDS 48	//number of bands to divide log spectrum into (higher = more clarity & more spread out spectrum)
+#define NUM_PATCHES	  18	//number of patches in the horizontal direction
+#define BANDS_IN_USE  NUM_PATCHES+1
+#define START_BAND    11	//the band number to start at (first band # = 0)
+
+#include <map>
+#include "Geometry.h"
+#include "Light.h"
 #include "Camera.h"
 #include "Frustum.h"
 #include "Light.h"
 #include "Geometry.h"
 #include "Matrix4.h"
+#include "ShaderGroup.h"
+#include "GlowGroup.h"
+#include "BezierSurface.h"
+#include "AudioManager.h"
+#include "ColorGradient.h"
+#include "FBO.h"
+#include "ParticleSystem.h"
 
 /*
  * Main class to contain all methods for the visualizer
@@ -43,6 +59,14 @@ private:
 
 	//scene graph groups
 	MatrixTransform* world;
+
+	//Audio
+	AudioManager* audioManager;
+	//float*        fftBuf;
+
+	float fftBuf[FFT_SIZE];
+	float fftBands[FFT_NUM_BANDS];
+	float patchBands[BANDS_IN_USE+8];
 
 public:
 	static Visualizer* getInstance(int*,char**);
